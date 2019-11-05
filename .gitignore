@@ -1,0 +1,40 @@
+*.class
+*.log
+*.xml
+
+# sbt specific
+.cache/
+.history/
+.lib/
+dist/*
+target/
+lib_managed/
+src_managed/
+project/boot/
+project/plugins/project/
+
+# Scala-IDE specific
+.scala_dependencies
+.worksheet
+*.iml
+*.ipr
+*.iws
+.idea
+out
+.cache
+.classpath
+.project
+.settings/
+*.sc
+
+.DS_Store
+
+# Ensime
+.ensime*
+*#
+.#*
+*~
+/bin/
+# IntelliJ
+.idea/
+.idea/*
