@@ -15,23 +15,12 @@ case class StreamZipper[A](left: Stream[A], focus: A, right: Stream[A]) {
     leftValues ++ focus ++ rightValues
   }
 
-  // TODO: Generalize these
-  def streamRights: Stream[StreamZipper[A]] = Stream.iterate(this)(_.moveRight)
-    .tail
-    .zip(right)
-    .map(_._1)
-
-  def streamLefts: Stream[StreamZipper[A]] = Stream.iterate(this)(_.moveLeft)
-    .tail
-    .zip(left)
-    .map(_._1)
-
-  def streamRF[B](f:StreamZipper[A] => B): Stream[B] = Stream.iterate(this)(_.moveRight)
+  def streamRightF[B](f:StreamZipper[A] => B): Stream[B] = Stream.iterate(this)(_.moveRight)
     .tail
     .zip(right)
     .map(t => f(t._1))
 
-  def streamLF[B](f:StreamZipper[A] => B): Stream[B] = Stream.iterate(this)(_.moveLeft)
+  def streamLeftF[B](f:StreamZipper[A] => B): Stream[B] = Stream.iterate(this)(_.moveLeft)
     .tail
     .zip(left)
     .map(t => f(t._1))
@@ -42,10 +31,10 @@ object StreamZipperOps {
   implicit def zipperComonad: Comonad[StreamZipper] = new Comonad[StreamZipper] {
     override def counit[A](w: StreamZipper[A]): A = w.focus
     override def cojoin[A](w: StreamZipper[A]): StreamZipper[StreamZipper[A]] = {
-      StreamZipper(w.streamLefts, w, w.streamRights)
+      StreamZipper(w.streamLeftF(identity), w, w.streamRightF(identity))
     }
     override def coflatMap[A, B](w: StreamZipper[A])(f: StreamZipper[A] => B): StreamZipper[B] = {
-      StreamZipper(w.streamLF(f), f(w.focus), w.streamRF(f))
+      StreamZipper(w.streamLeftF(f), f(w), w.streamRightF(f))
     }
   }
 }
