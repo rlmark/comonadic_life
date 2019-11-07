@@ -16,3 +16,8 @@ scalacOptions ++= Seq(
   "-Ywarn-numeric-widen"
 )
 scalacOptions in (Compile, console) --= Seq("-Ywarn-unused:imports", "-Xfatal-warnings")
+
+libraryDependencies ++= Seq(
+  "org.scalatest"           %% "scalatest"                % "3.0.8" % Test,
+  "org.scalactic"           %% "scalactic"                % "3.0.8"
+)
