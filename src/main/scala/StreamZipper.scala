@@ -28,13 +28,3 @@ case class StreamZipper[A](left: Stream[A], focus: A, right: Stream[A]) {
     .map(t => f(t._1))
 
 }
-
-object test extends App {
-
-  import StreamZipperOps._
-
-  val testZip = StreamZipper(Stream(4,3,2,1), 5, Stream(6,7,8))
-  println(testZip.prettyPrint)
-  println(testZip.moveLeft.prettyPrint)
-  println(testZip.moveRight.prettyPrint)
-}
