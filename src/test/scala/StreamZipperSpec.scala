@@ -16,4 +16,7 @@ class StreamZipperSpec extends FlatSpec with Matchers {
   it should "pretty print the zipper intuitively" in {
     initialZipper.prettyPrint should include("1, 2, 3, 4 (5) 6, 7, 8")
   }
+  it should "create a list from the zipper intuitively" in {
+    initialZipper.toList shouldBe List(1,2,3,4,5,6,7,8)
+  }
 }

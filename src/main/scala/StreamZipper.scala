@@ -1,11 +1,14 @@
 case class StreamZipper[A](left: Stream[A], focus: A, right: Stream[A]) {
   // you kind of have to disregard the directionality of the stream here, but that's ok
   def moveRight: StreamZipper[A] = {
-    StreamZipper(focus #:: left , right.head, right.tail)
+    if (right.isEmpty) this else {
+      StreamZipper(focus #:: left , right.head, right.tail)
+    }
   }
 
   def moveLeft: StreamZipper[A] = {
-    StreamZipper(left.tail, left.head, focus #:: right)
+    if (left.isEmpty) this
+    else StreamZipper(left.tail, left.head, focus #:: right)
   }
 
   def prettyPrint: String = {
@@ -13,6 +16,10 @@ case class StreamZipper[A](left: Stream[A], focus: A, right: Stream[A]) {
     val focus = s" (${this.focus}) "
     val rightValues = this.right.toList.mkString(", ")
     leftValues ++ focus ++ rightValues
+  }
+
+  def toList: List[A] = {
+    (left.toList.reverse :+ focus) ++ right.toList
   }
 
   def streamRightF[B](f:StreamZipper[A] => B): Stream[B] =
