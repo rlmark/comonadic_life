@@ -1,3 +1,7 @@
+package instances
+
+import catlike._
+
 object StreamZipperComonad {
   implicit def zipperComonad: Comonad[StreamZipper] = new Comonad[StreamZipper] {
     override def counit[A](w: StreamZipper[A]): A = w.focus

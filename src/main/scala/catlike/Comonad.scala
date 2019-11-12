@@ -1,3 +1,5 @@
+package catlike
+
 trait Comonad[W[_]] {
   // exctracts a value from the context
   def counit[A](w: W[A]): A
@@ -6,4 +8,3 @@ trait Comonad[W[_]] {
 
   def coflatMap[A,B](w: W[A])(f: W[A] => B): W[B]
 }
-

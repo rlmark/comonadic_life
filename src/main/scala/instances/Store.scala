@@ -1,3 +1,7 @@
+package instances
+
+import catlike._
+
 case class Store[S, A](query: S => A)(val index: S)
 
 object StoreComonad {

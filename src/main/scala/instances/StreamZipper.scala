@@ -1,3 +1,5 @@
+package instances
+
 case class StreamZipper[A](left: Stream[A], focus: A, right: Stream[A]) {
   // you kind of have to disregard the directionality of the stream here, but that's ok
   def moveRight: StreamZipper[A] = {

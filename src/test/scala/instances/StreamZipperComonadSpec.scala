@@ -1,8 +1,10 @@
+package instances
+
 import org.scalatest._
+import StreamZipperComonad._
+import syntax.streamZipper._
 
 class StreamZipperComonadSpec extends FlatSpec with Matchers {
-  import StreamZipperComonad._
-  import syntax._
 
   val initialZipper: StreamZipper[Int] = StreamZipper(Stream(4,3,2,1), 5, Stream(6,7,8))
 
