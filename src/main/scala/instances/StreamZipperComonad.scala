@@ -11,7 +11,8 @@ object StreamZipperComonad {
     }
 
     override def coflatMap[A, B](w: StreamZipper[A])(f: StreamZipper[A] => B): StreamZipper[B] = {
-      StreamZipper(w.streamLeftF(f), f(w), w.streamRightF(f))
+      // Alternatively: StreamZipper(w.streamLeftF(f), f(w), w.streamRightF(f))
+      map(coflatten(w))(f)
     }
 
     override def map[A, B](fa: StreamZipper[A])(f: A => B): StreamZipper[B] = {

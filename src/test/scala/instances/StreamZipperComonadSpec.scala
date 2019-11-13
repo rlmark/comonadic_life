@@ -28,4 +28,7 @@ class StreamZipperComonadSpec extends FlatSpec with Matchers {
     // Note: the leftmost and rightmost values lack an identity element for what to do in the case where the stream is empty
     initialZipper.coflatMap(sumLeftRight).toList shouldBe List(4,6,9,12,15,18,21,23)
   }
+  it should "have a valid map" in {
+    initialZipper.map(_.toString).toStream shouldBe Stream("1", "2", "3", "4", "5", "6", "7", "8")
+  }
 }
