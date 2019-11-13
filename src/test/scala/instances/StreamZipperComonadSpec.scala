@@ -9,7 +9,7 @@ class StreamZipperComonadSpec extends FlatSpec with Matchers {
   val initialZipper: StreamZipper[Int] = StreamZipper(Stream(4,3,2,1), 5, Stream(6,7,8))
 
   "StreamZipperComonad" should "have a valid coUnit" in {
-    initialZipper.coUnit shouldBe 5
+    initialZipper.counit shouldBe 5
   }
   it should "have a valid coFlatten" in {
     val smallZipper: StreamZipper[Int] = StreamZipper(Stream(1), 2, Stream(3))
