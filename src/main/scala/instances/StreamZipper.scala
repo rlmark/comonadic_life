@@ -1,15 +1,16 @@
 package instances
 
 case class StreamZipper[A](left: Stream[A], focus: A, right: Stream[A]) {
-  // you kind of have to disregard the directionality of the stream for the leftt, but that's ok
+  // you kind of have to disregard the directionality of the stream for the left, but that's ok
   def moveRight: StreamZipper[A] = {
     if (right.isEmpty) this else {
       StreamZipper(focus #:: left , right.head, right.tail)
     }
   }
 
+  // Maybe these should return options.
   def moveLeft: StreamZipper[A] = {
-    if (left.isEmpty) this
+    if (left.isEmpty) this // This is quickly becoming a problem
     else StreamZipper(left.tail, left.head, focus #:: right)
   }
 
