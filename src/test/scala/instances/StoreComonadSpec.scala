@@ -9,7 +9,7 @@ class StoreComonadSpec extends FlatSpec with Matchers {
 
   val grid =
 
-  "A StoreComonad" should "have a valid counit" in {
+  "A StoreComonad" should "have a valid extract" in {
     val coordinates1: Coordinates = (0,0)
     val coordinates2: Coordinates = (1,0)
 

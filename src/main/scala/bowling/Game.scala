@@ -19,7 +19,16 @@ object Game extends App {
     if (frame == 10)
       currentFramePoints
     else if (isStrike(turnPoints.head)) {
-      val leftStream: Stream[Int] = frames.coflatten.left.flatMap(s => s.focus.pinsDown.toStream)
+      // Take the current frame and duplicate its structure, creating a StreamZipper of StreamZippers where every frame is in focus.
+      // Taking the left value of that structure gives us a stream of "future" StreamZippers excluding the current frame in question,
+      // flatMapping over the stream to get the focus' pin count stream gives us a continuous stream of values to the left of us.
+      // In this way, we don't care about iterating through subsequent frames for our Strike calculation.
+      val leftStream: Stream[Int] = frames
+        .duplicate
+        .left
+        .flatMap((s: StreamZipper[Frame]) =>
+          s.focus.pinsDown.toStream
+        )
       val next2: Stream[Int] = leftStream.take(2)
       currentFramePoints + next2.sum
     }
@@ -30,6 +39,7 @@ object Game extends App {
     else currentFramePoints
   }
 
+  //
   val scoreAll: StreamZipper[Int] = frameZipperToScore.coflatMap(calculateScore)
   val frameScores = scoreAll.focus +: scoreAll.left.toList
 
