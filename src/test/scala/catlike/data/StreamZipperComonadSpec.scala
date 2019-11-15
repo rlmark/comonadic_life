@@ -1,4 +1,4 @@
-package catlike.instances
+package catlike.data
 
 import org.scalatest._
 import StreamZipperComonad._

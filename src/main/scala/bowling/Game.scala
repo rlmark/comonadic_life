@@ -1,7 +1,7 @@
 package bowling
 
-import catlike.instances.StreamZipper
-import catlike.instances.StreamZipperComonad._
+import catlike.data.StreamZipper
+import catlike.data.StreamZipperComonad._
 import catlike.syntax.streamZipper._
 import ScoreHelpers._
 
