@@ -1,4 +1,4 @@
-package instances
+package catlike.instances
 
 import org.scalatest._
 
@@ -6,7 +6,7 @@ class StreamZipperSpec extends FlatSpec with Matchers {
 
   val initialZipper: StreamZipper[Int] = StreamZipper(Stream(4,3,2,1), 5, Stream(6,7,8))
 
-  "instances.StreamZipper" should "have valid focus" in {
+  "catlike.instances.StreamZipper" should "have valid focus" in {
     initialZipper.focus shouldBe 5
   }
   it should "shift focus left" in {

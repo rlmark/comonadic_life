@@ -1,9 +1,9 @@
-package syntax
+package catlike.syntax
 
 import catlike.Comonad
 
 object streamZipper {
-  import instances.StreamZipper
+  import catlike.instances.StreamZipper
 
   implicit class streamZipperSyntax[A](self: StreamZipper[A])(implicit c: Comonad[StreamZipper]) {
     def extract: A = c.extract(self)
@@ -17,7 +17,7 @@ object streamZipper {
 }
 
 object storeComonad {
-  import instances.StoreComonad._
+  import catlike.instances.StoreComonad._
 
   implicit class storeComonadSyntax[A](self: CoordinateStore[A])(implicit c: Comonad[CoordinateStore]) {
     def extract: A = c.extract(self)

@@ -1,8 +1,8 @@
-package instances
+package catlike.instances
 
 import org.scalatest._
 import StreamZipperComonad._
-import syntax.streamZipper._
+import catlike.syntax.streamZipper._
 
 class StreamZipperComonadSpec extends FlatSpec with Matchers {
 

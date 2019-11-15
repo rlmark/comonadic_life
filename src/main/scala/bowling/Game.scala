@@ -1,8 +1,8 @@
 package bowling
 
-import instances.StreamZipper
-import instances.StreamZipperComonad._
-import syntax.streamZipper._
+import catlike.instances.StreamZipper
+import catlike.instances.StreamZipperComonad._
+import catlike.syntax.streamZipper._
 import ScoreHelpers._
 
 object Game extends App {

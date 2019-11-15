@@ -1,4 +1,4 @@
-package instances
+package catlike.instances
 
 import catlike._
 

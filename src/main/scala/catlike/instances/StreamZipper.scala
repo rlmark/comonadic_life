@@ -1,4 +1,4 @@
-package instances
+package catlike.instances
 
 case class StreamZipper[A](left: Stream[A], focus: A, right: Stream[A]) {
   // you kind of have to disregard the directionality of the stream for the left, but that's ok
