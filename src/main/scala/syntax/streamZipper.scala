@@ -19,13 +19,13 @@ object streamZipper {
 object storeComonad {
   import instances.StoreComonad._
 
-  implicit class storeComonadSyntax[A](self: CartesianStore[A])(implicit c: Comonad[CartesianStore]) {
+  implicit class storeComonadSyntax[A](self: CoordinateStore[A])(implicit c: Comonad[CoordinateStore]) {
     def extract: A = c.extract(self)
 
-    def duplicate: CartesianStore[CartesianStore[A]] = c.duplicate(self)
+    def duplicate: CoordinateStore[CoordinateStore[A]] = c.duplicate(self)
 
-    def coflatMap[B](f: CartesianStore[A] => B): CartesianStore[B] = c.coflatMap(self)(f)
+    def coflatMap[B](f: CoordinateStore[A] => B): CoordinateStore[B] = c.coflatMap(self)(f)
 
-    def map[B](f: A => B): CartesianStore[B] = c.map(self)(f)
+    def map[B](f: A => B): CoordinateStore[B] = c.map(self)(f)
   }
 }

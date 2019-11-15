@@ -11,6 +11,8 @@ object Game extends App {
 
   val playerTurns: Stream[Frame] = PlayerSimulator.run
 
+  // NOTE: this is probably a sign that StreamZipper is an overpowered data structure for what I'm doing
+  // TODO: It's likely that the comonad I need is the one for NonEmptyList.
   val frameZipperToScore: StreamZipper[Frame] = StreamZipper(playerTurns.tail, playerTurns.head, Stream.empty)
 
   def calculateScore(frames: StreamZipper[Frame]): Int = {
