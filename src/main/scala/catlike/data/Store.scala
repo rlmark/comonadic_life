@@ -23,11 +23,11 @@ object Store {
     }
   }
 
-  type GridCoordinates = Matrix[Boolean]
-  type GridCoordinateStore[A] = Store[GridCoordinates, A]
+  type MatrixB = Matrix[Boolean]
+  type GridCoordinateStore[A] = Store[MatrixB, A]
 
-  def storeGrid(matrix: GridCoordinates): Store[Coordinates, GridCoordinates] = {
-    Store(matrix.at, matrix.focus) // TODO
+  def storeGrid(matrix: MatrixB): Store[Coordinates, MatrixB] = {
+    Store[Coordinates, MatrixB](matrix.at, matrix.focus) // TODO
   }
 
   implicit def gridComonadInstance: Comonad[GridCoordinateStore] = {

@@ -8,9 +8,16 @@ case class Matrix[A](value: Nel[Nel[A]], focus: Coordinates) {
 }
 
 object Matrix {
+
+  def nest[A](v: Matrix[A]): Matrix[Matrix[A]] = {
+    // Think about this, do we want the outer matrix's focus to be
+    // Matrix(v.value, v.focus)
+    ???
+  }
+
   implicit def gridComonadInstance: Comonad[Matrix] = {
     new Comonad[Matrix] {
-      override def extract[A](w: Matrix[A]): A = ???
+      override def extract[A](w: Matrix[A]): A = w.at(w.focus)
 
       override def duplicate[A](w: Matrix[A]): Matrix[Matrix[A]] = ???
 
