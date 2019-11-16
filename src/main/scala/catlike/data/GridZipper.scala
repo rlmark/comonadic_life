@@ -3,14 +3,14 @@ package catlike.data
 import catlike.Comonad
 
 // 2 dimensions represented by nested StreamZippers
-case class GridZipper[A](zip: StreamZipper[StreamZipper[A]])
+case class GridZipper[A](value: StreamZipper[StreamZipper[A]])
 
 object GridZipper {
   import catlike.syntax.streamZipper._
 
   implicit def gridZipperComonad: Comonad[GridZipper] = {
     new Comonad[GridZipper] {
-      override def extract[A](w: GridZipper[A]): A = {w.zip.focus.focus}
+      override def extract[A](w: GridZipper[A]): A = w.value.focus.focus
 
       override def duplicate[A](w: GridZipper[A]): GridZipper[GridZipper[A]] = ???
 

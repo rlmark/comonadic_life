@@ -2,16 +2,15 @@ package catlike.data
 
 import catlike.Comonad
 
-import scala.util.Try
-
 case class Nel[A](head: A, tail: List[A]) {
+  // Note: not safe op
   def at(i: Int): A = {
     if (i == 0) head else tail(i + 1)
   }
+
   def toList: List[A] = head :: tail
 
   def coflatMap[B](f: Nel[A] => B): Nel[B] = {
-    // this might be reversed in a bad way... test it
     def loop(as: List[A], acc: List[B]): List[B] =
       as match {
         case Nil => acc
@@ -25,16 +24,16 @@ case class Nel[A](head: A, tail: List[A]) {
 
 object Nel {
   def unsafeFromList[A](list: List[A]): Nel[A] = Nel(list.head, list.tail)
-  def fromList[A](list:List[A]): Option[Nel[A]] = Option(list.head).map(Nel(_,list.tail))
+
+  def fromList[A](list:List[A]): Option[Nel[A]] = list.headOption.map(Nel(_,list.tail))
+
   def of[A](head: A, as: A*): Nel[A] = Nel(head, as.toList)
 
   implicit def nelComonad: Comonad[Nel] = {
     new Comonad[Nel] {
       override def extract[A](w: Nel[A]): A = w.head
 
-      override def duplicate[A](w: Nel[A]): Nel[Nel[A]] = {
-        w.coflatMap(identity[Nel[A]])
-      }
+      override def duplicate[A](w: Nel[A]): Nel[Nel[A]] = w.coflatMap(identity[Nel[A]])
 
       override def coflatMap[A, B](w: Nel[A])(f: Nel[A] => B): Nel[B] = map(duplicate(w))(f)
 

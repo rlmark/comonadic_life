@@ -8,7 +8,6 @@ case class Matrix[A](value: Nel[Nel[A]], focus: Coordinates) {
 }
 
 object Matrix {
-
   def nest[A](v: Matrix[A]): Matrix[Matrix[A]] = {
     // Think about this, do we want the outer matrix's focus to be
     // Matrix(v.value, v.focus)
