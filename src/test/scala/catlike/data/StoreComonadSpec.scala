@@ -4,7 +4,7 @@ import org.scalatest._
 
 class StoreComonadSpec extends FlatSpec with Matchers {
 
-  import StoreComonad._
+  import Store._
   import catlike.syntax.storeComonad._
 
   def isOrigin(coordinates: Coordinates): Boolean = if (coordinates == (0,0)) true else false

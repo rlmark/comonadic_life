@@ -1,7 +1,6 @@
 package catlike.data
 
 import org.scalatest._
-import StreamZipperComonad._
 import catlike.syntax.streamZipper._
 
 class StreamZipperComonadSpec extends FlatSpec with Matchers {
