@@ -17,7 +17,7 @@ object streamZipper {
 }
 
 object storeComonad {
-  import catlike.data.StoreComonad._
+  import catlike.data.Store._
 
   implicit class storeComonadSyntax[A](self: CoordinateStore[A])(implicit c: Comonad[CoordinateStore]) {
     def extract: A = c.extract(self)
