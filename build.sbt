@@ -19,5 +19,6 @@ scalacOptions in (Compile, console) --= Seq("-Ywarn-unused:imports", "-Xfatal-wa
 
 libraryDependencies ++= Seq(
   "org.scalatest"           %% "scalatest"                % "3.0.8" % Test,
-  "org.scalactic"           %% "scalactic"                % "3.0.8"
+  "org.scalactic"           %% "scalactic"                % "3.0.8",
+  "com.lihaoyi" %% "pprint" % "0.5.6"
 )
