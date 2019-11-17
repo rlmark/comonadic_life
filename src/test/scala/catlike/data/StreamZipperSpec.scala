@@ -21,4 +21,19 @@ class StreamZipperSpec extends FlatSpec with Matchers {
   it should "create a list from the zipper intuitively" in {
     initialZipper.toList shouldBe List(1,2,3,4,5,6,7,8)
   }
+  it should "duplicateLeft" in {
+    val smallerZipper: StreamZipper[Int] = StreamZipper(Stream(2,1), 3, Stream(4))
+
+    smallerZipper.duplicateLeft(identity).toList shouldBe List(
+      StreamZipper(Stream(1), 2, Stream(3,4)),
+      StreamZipper(Stream(), 1, Stream(2,3,4))
+    )
+  }
+  it should "duplicateRight" in {
+    val smallerZipper: StreamZipper[Int] = StreamZipper(Stream(1), 2, Stream(3,4))
+    smallerZipper.duplicateRight(identity).toList shouldBe List(
+      StreamZipper(Stream(2,1), 3, Stream(4)),
+      StreamZipper(Stream(3,2,1),4,Stream())
+    )
+  }
 }

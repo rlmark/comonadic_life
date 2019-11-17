@@ -25,11 +25,6 @@ object Store {
 
   type MatrixB = Matrix[Boolean]
   type GridCoordinateStore[A] = Store[MatrixB, A]
-
-  def storeGrid(matrix: MatrixB): Store[Coordinates, MatrixB] = {
-    Store[Coordinates, MatrixB](matrix.at, matrix.focus) // TODO
-  }
-
   implicit def gridComonadInstance: Comonad[GridCoordinateStore] = {
     new Comonad[GridCoordinateStore] {
       override def extract[A](w: GridCoordinateStore[A]): A = ???

@@ -31,13 +31,13 @@ case class StreamZipper[A](left: Stream[A], focus: A, right: Stream[A]) {
     left.reverse #::: (focus #:: right)
   }
 
-  def streamRightF[B](f:StreamZipper[A] => B): Stream[B] =
+  def duplicateRight[B](f:StreamZipper[A] => B): Stream[B] =
     Stream.iterate(this)(_.moveRight)
     .tail
     .zip(right)
     .map(t => f(t._1))
 
-  def streamLeftF[B](f:StreamZipper[A] => B): Stream[B] =
+  def duplicateLeft[B](f:StreamZipper[A] => B): Stream[B] =
     Stream.iterate(this)(_.moveLeft)
     .tail
     .zip(left)
@@ -50,7 +50,7 @@ object StreamZipper {
     override def extract[A](w: StreamZipper[A]): A = w.focus
 
     override def duplicate[A](w: StreamZipper[A]): StreamZipper[StreamZipper[A]] = {
-      StreamZipper(w.streamLeftF(identity), w, w.streamRightF(identity))
+      StreamZipper(w.duplicateLeft(identity), w, w.duplicateRight(identity))
     }
 
     override def coflatMap[A, B](w: StreamZipper[A])(f: StreamZipper[A] => B): StreamZipper[B] = {
