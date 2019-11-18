@@ -3,22 +3,25 @@ package catlike.data
 import catlike.Comonad
 
 case class StreamZipper[A](left: Stream[A], focus: A, right: Stream[A]) {
-  // you kind of have to disregard the directionality of the stream for the left, but that's ok
+  def setFocus(a: A): StreamZipper[A] = {
+    this.copy(focus = a)
+  }
+
   def moveRight: StreamZipper[A] = {
     if (right.isEmpty) this else {
       StreamZipper(focus #:: left , right.head, right.tail)
     }
   }
 
-  // Maybe these should return options.
+  // Maybe these should return options or have an implicit monoid instance of A so we know what to do when it's empty.
   def moveLeft: StreamZipper[A] = {
-    if (left.isEmpty) this // This is quickly becoming a problem
+    if (left.isEmpty) this // This might become a problem
     else StreamZipper(left.tail, left.head, focus #:: right)
   }
 
   def prettyPrint: String = {
     val leftValues = this.left.toList.reverse.mkString(", ")
-    val focus = s" (${this.focus}) "
+    val focus = if (left.isEmpty) s"${Console.BLUE}${this.focus}, ${Console.RESET}" else s",${Console.BLUE} ${this.focus}${Console.RESET}, "
     val rightValues = this.right.toList.mkString(", ")
     leftValues ++ focus ++ rightValues
   }

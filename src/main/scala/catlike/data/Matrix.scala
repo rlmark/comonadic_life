@@ -3,7 +3,7 @@ package catlike.data
 import catlike.Comonad
 import catlike.data.Store.Coordinates
 
-case class Matrix[A](value: Nel[Nel[A]], focus: Coordinates) {
+case class Matrix[A](value: Nel[Nel[A]]) {
   def at(coordinates: Coordinates): A = value.at(coordinates._2).at(coordinates._1)
 }
 
@@ -16,7 +16,7 @@ object Matrix {
 
   implicit def gridComonadInstance: Comonad[Matrix] = {
     new Comonad[Matrix] {
-      override def extract[A](w: Matrix[A]): A = w.at(w.focus)
+      override def extract[A](w: Matrix[A]): A = w.value.head.head
 
       override def duplicate[A](w: Matrix[A]): Matrix[Matrix[A]] = ???
 
