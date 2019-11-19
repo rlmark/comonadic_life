@@ -1,11 +1,18 @@
 package catlike.data
 
-import StreamZipper._
-import catlike.Comonad
+import catlike.{Comonad, Monoid}
+import catlike.data.StreamZipper._
+import catlike.syntax.gridZipper._
 import catlike.syntax.streamZipper._
 
 // 2 dimensions represented by nested StreamZippers
 case class GridZipper[A](value: StreamZipper[StreamZipper[A]]) {
+
+  def setFocus(a: A): GridZipper[A] = {
+    val inner: StreamZipper[A] = value.focus.setFocus(a)
+    GridZipper(value.setFocus(inner))
+  }
+
   def prettyPrint: String = {
     value.toList.map(x => x.prettyPrint).mkString("\n")
   }
@@ -24,6 +31,19 @@ case class GridZipper[A](value: StreamZipper[StreamZipper[A]]) {
 
   def west: GridZipper[A] = {
     GridZipper(value.map(xAxis => xAxis.moveLeft))
+  }
+
+  def getNeighbors: List[A] = {
+    List(
+      this.north.extract,
+      this.east.extract,
+      this.south.extract,
+      this.west.extract,
+      this.north.east.extract,
+      this.north.west.extract,
+      this.south.east.extract,
+      this.south.west.extract
+    )
   }
 }
 
@@ -45,7 +65,7 @@ object GridZipper {
 
       override def map[A, B](fa: GridZipper[A])(f: A => B): GridZipper[B] = GridZipper(fa.value.map(s => s.map(f)))
 
-      def nest[A](s: StreamZipper[StreamZipper[A]]): StreamZipper[StreamZipper[StreamZipper[A]]] = {
+      private def nest[A](s: StreamZipper[StreamZipper[A]]): StreamZipper[StreamZipper[StreamZipper[A]]] = {
         val duplicateLefts: Stream[StreamZipper[StreamZipper[A]]] = Stream.iterate(s)(current => current.moveLeft)
           .tail
           .zip(s.left)

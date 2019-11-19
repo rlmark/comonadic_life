@@ -14,5 +14,4 @@ object gridZipper {
 
     def map[B](f: A => B): GridZipper[B] = c.map(self)(f)
   }
-
 }

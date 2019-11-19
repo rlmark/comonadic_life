@@ -1,6 +1,6 @@
 package catlike.data
 
-import catlike.Comonad
+import catlike.{Comonad, Monoid}
 
 case class StreamZipper[A](left: Stream[A], focus: A, right: Stream[A]) {
   def setFocus(a: A): StreamZipper[A] = {
@@ -8,12 +8,11 @@ case class StreamZipper[A](left: Stream[A], focus: A, right: Stream[A]) {
   }
 
   def moveRight: StreamZipper[A] = {
-    if (right.isEmpty) this else {
-      StreamZipper(focus #:: left , right.head, right.tail)
-    }
+    if (right.isEmpty) this
+    else StreamZipper(focus #:: left , right.head, right.tail)
   }
 
-  // Maybe these should return options or have an implicit monoid instance of A so we know what to do when it's empty.
+  // Maybe these should have an implicit monoid instance of A so we know what to do when it's empty.
   def moveLeft: StreamZipper[A] = {
     if (left.isEmpty) this // This might become a problem
     else StreamZipper(left.tail, left.head, focus #:: right)
