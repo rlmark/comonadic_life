@@ -5,11 +5,11 @@ import catlike.data.StreamZipper._
 import catlike.data.{GridZipper, StreamZipper}
 import catlike.syntax.streamZipper._
 import catlike.syntax.gridZipper._
+import Swarms._
 
 import scala.util.Random
 
-
-object Draw extends App {
+object Main extends App {
 
   def cellLifecycle(grid: GridZipper[Int]): Int = {
     val extracted = GridZipper.gridZipperComonad.extract(grid)
@@ -50,39 +50,16 @@ object Draw extends App {
     StreamZipper(left.tail.toStream, left.head, right.toStream)
   }
 
-  def render(grid: GridZipper[Int]): String = {
-    def cellString(value: Int): String = {
-      val animal = "\uD83E\uDD84"
-      val rand = Random.nextInt(3)
-      val leaf = if (rand == 1) "\uD83C\uDF32" else if (rand == 2) "\uD83C\uDF34" else "\uD83C\uDF33"
-      val test = if (value == 1) s" $animal " else s" $leaf "
-      test
-    }
-    grid.map(i => cellString(i)).value.map(_.toList).toList.map(_.mkString).mkString("\n")
+  def cellString(value: Int): String = {
+    val alive = "\uD83E\uDD84"
+    val rand = Random.nextInt(3)
+    val background = if (rand == 1) "\uD83C\uDF32" else if (rand == 2) "\uD83C\uDF34" else "\uD83C\uDF33"
+    if (value == 1) s"$alive" else s"$background"
   }
 
-  val glider = Map(
-    (1, 0) -> 1,
-    (2, 1) -> 1,
-    (0, 2) -> 1,
-    (1, 2) -> 1,
-    (2, 2) -> 1,
-  )
-
-  val blinker = Map(
-    (0, 0) -> 1,
-    (1, 0) -> 1,
-    (2, 0) -> 1
-  )
-
-  val beacon = Map(
-    (0, 0) -> 1,
-    (1, 0) -> 1,
-    (0, 1) -> 1,
-    (3, 2) -> 1,
-    (2, 3) -> 1,
-    (3, 3) -> 1
-  )
+  def render(grid: GridZipper[Int]): String = {
+    grid.map(i => cellString(i)).value.map(_.toList).toList.map(_.mkString).mkString("\n")
+  }
 
   implicit class InitOps(pairs: Map[Coordinates, Int]) {
     def at(coord: Coordinates): Map[Coordinates, Int] = pairs.map {
@@ -90,18 +67,16 @@ object Draw extends App {
     }
   }
 
-  val initialState = (glider at(1, 1)) ++ (beacon at(16, 6)) ++ (blinker at(17, 5))
+  val initialState = (glider at(1, 1)) ++ (beacon at(16, 12)) ++ (blinker at(14, 5)) ++ (dieHard at (7,7))
 
-  def initialFn(coord: (Int, Int)): Int =
+  def setInitial(coord: (Int, Int)): Int =
     initialState.getOrElse(coord, 0)
 
   def gameLoop(): Unit = {
-    var current: GridZipper[Int] = tabulate(initialFn)
-    while (true) {
-      current = generation(current)
-      val rendered = render(current)
-      println(rendered)
-      println("\u001b") // Clear term
+    val streamGrids: Stream[GridZipper[Int]] = Stream.iterate(tabulate(setInitial))(generation)
+    streamGrids.foreach{f =>
+      println(render(f))
+      println("\u001b")
       Thread.sleep(300)
     }
   }
