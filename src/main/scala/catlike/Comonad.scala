@@ -19,9 +19,12 @@ trait Comonad[W[_]] extends Functor[W] {
    *
    * Nel
    * [1,2,3] => duplicate =>
-   * [[1,2,3], [2,3], [3]]
+   * [
+   *  [1,2,3],
+   *  [2,3],
+   *  [3]
+   *]
    */
-
 
   // given an value in a context and a function which transforms and extracts the value,
   // return the transformed value in the context

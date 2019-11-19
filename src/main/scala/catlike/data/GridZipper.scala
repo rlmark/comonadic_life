@@ -33,21 +33,23 @@ case class GridZipper[A](value: StreamZipper[StreamZipper[A]]) {
     GridZipper(value.map(xAxis => xAxis.moveLeft))
   }
 
-  def getNeighbors: List[A] = {
-    List(
-      this.north.extract,
-      this.east.extract,
-      this.south.extract,
-      this.west.extract,
-      this.north.east.extract,
-      this.north.west.extract,
-      this.south.east.extract,
-      this.south.west.extract
-    )
-  }
 }
 
 object GridZipper {
+
+  def getNeighbors[A](grid: GridZipper[A]): List[A] = {
+    List(
+      grid.north.extract,
+      grid.east.extract,
+      grid.south.extract,
+      grid.west.extract,
+      grid.north.east.extract,
+      grid.north.west.extract,
+      grid.south.east.extract,
+      grid.south.west.extract
+    )
+  }
+
 
   implicit def gridZipperComonad: Comonad[GridZipper] = {
     new Comonad[GridZipper] {
@@ -66,12 +68,14 @@ object GridZipper {
       override def map[A, B](fa: GridZipper[A])(f: A => B): GridZipper[B] = GridZipper(fa.value.map(s => s.map(f)))
 
       private def nest[A](s: StreamZipper[StreamZipper[A]]): StreamZipper[StreamZipper[StreamZipper[A]]] = {
-        val duplicateLefts: Stream[StreamZipper[StreamZipper[A]]] = Stream.iterate(s)(current => current.moveLeft)
+        val duplicateLefts: Stream[StreamZipper[StreamZipper[A]]] =
+          Stream.iterate(s)(current => current.map(_.moveLeft))
           .tail
           .zip(s.left)
           .map(_._1)
 
-        val duplicateRights: Stream[StreamZipper[StreamZipper[A]]] = Stream.iterate(s)(current => current.moveRight)
+        val duplicateRights: Stream[StreamZipper[StreamZipper[A]]] =
+          Stream.iterate(s)(current => current.map(_.moveRight))
           .tail
           .zip(s.right)
           .map(_._1)

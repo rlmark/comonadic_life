@@ -7,29 +7,40 @@ import catlike.syntax.gridZipper._
 import catlike.syntax.streamZipper._
 
 class GameSpec extends FlatSpec with Matchers {
+  val lrStream: Stream[Int] = Stream.fill(3)(0)
+  val streamOfStreams: StreamZipper[StreamZipper[Int]] = StreamZipper(lrStream, 0, lrStream).duplicate
+  val basicGrid = GridZipper(streamOfStreams)
 
   "cellLifecycle" should "keep board of all 0's the same" in {
-    val lrStream = Stream.fill(1)(0)
-    val streamOfStreams = StreamZipper(lrStream, 0, lrStream).duplicate
-    val basicGrid = GridZipper(streamOfStreams)
-
     val result = basicGrid.coflatMap(x => cellLifecycle(x))
     println(result.prettyPrint)
     result.extract shouldBe 0
   }
-  it should "change alive cell to dead when no surrounding cells are alive" in {
-    val lrStream = Stream.fill(1)(0)
-    val streamOfStreams = StreamZipper(lrStream, 1, lrStream).duplicate
-    val basicGrid = GridZipper(streamOfStreams)
+  it should "set an arbitrary point" in {
+    val setFocusB = basicGrid.setFocus(5)
+    val randomN = setFocusB.north.setFocus(4)
+    println(randomN.prettyPrint + "\n")
+    println(randomN.west.setFocus(1).prettyPrint)
+  }
+  it should "set another arbitrary point" in {
+    val setFocusB = basicGrid.setFocus(1)
 
-    val result = basicGrid.coflatMap(x => cellLifecycle(x))
+    val south = setFocusB.south.setFocus(2)
+    println(south.prettyPrint + "\n")
+
+    val north = setFocusB.north.setFocus(3)
+    println(north.prettyPrint + "\n")
+  }
+  it should "change live cell to dead when no surrounding cells are alive" in {
+    val setCenter = basicGrid.setFocus(1)
+    println(setCenter.prettyPrint + "\n")
+
+    val result = setCenter.coflatMap(x => cellLifecycle(x))
     println(result.prettyPrint)
     result.extract shouldBe 0
   }
-  it should "change dead cell to alive when surrounded by three lives cells" in {
-    val lrStream = Stream.fill(1)(0)
-    val streamOfStreams = StreamZipper(lrStream, 0, lrStream).duplicate
-    val grid1: GridZipper[Int] = GridZipper(streamOfStreams).west.setFocus(1)
+  it should "change dead cell to alive when surrounded by three live cells" in {
+    val grid1: GridZipper[Int] = basicGrid.west.setFocus(1)
 
     println("set west")
     println(grid1.prettyPrint)
@@ -54,6 +65,8 @@ class GameSpec extends FlatSpec with Matchers {
     println(result.prettyPrint)
     result.extract shouldBe 1
 
+    println("south")
+    println(result.south.prettyPrint)
     result.south.extract shouldBe 0
   }
 
