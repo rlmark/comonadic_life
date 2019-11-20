@@ -40,7 +40,6 @@ object Game extends App {
     else currentFramePoints
   }
 
-  //
   val scoreAll: StreamZipper[Int] = frameZipperToScore.coflatMap(calculateScore)
   val frameScores = scoreAll.focus +: scoreAll.left.toList
 

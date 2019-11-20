@@ -14,7 +14,7 @@ object Renderer {
     if (value == 1) alive else background
   }
 
-  def render(grid: GridZipper[Int]): String = {
+  def typeset(grid: GridZipper[Int]): String = {
     grid.map(i => cellString(i))
       .value
       .map(_.toList)
@@ -25,5 +25,11 @@ object Renderer {
 
   def frameRate(millis: Int): Unit = {
     Thread.sleep(millis)
+  }
+
+  def runFrames(gridZipper: GridZipper[Int]): Unit = {
+    clear
+    println(typeset(gridZipper))
+    frameRate(275)
   }
 }
