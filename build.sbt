@@ -21,3 +21,5 @@ libraryDependencies ++= Seq(
   "org.scalatest"           %% "scalatest"                % "3.0.8" % Test,
   "org.scalactic"           %% "scalactic"                % "3.0.8"
 )
+
+mainClass in (Compile, run) := Some("conway.Main")

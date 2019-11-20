@@ -6,48 +6,27 @@ import catlike.data.{GridZipper, StreamZipper}
 import catlike.syntax.streamZipper._
 import catlike.syntax.gridZipper._
 import Swarms._
+import Game._
 
 import scala.util.Random
 
 object Main extends App {
 
-  def cellLifecycle(grid: GridZipper[Int]): Int = {
-    val extracted = GridZipper.gridZipperComonad.extract(grid)
-    val neighborList = GridZipper.getNeighbors(grid)
-
-    (neighborList.sum, extracted) match {
-      case (sum, 1) if sum == 2 || sum == 3 => 1
-      case (3, 0) => 1
-      case (_, 1) => 0
-      case (_, x) => x
-    }
-  }
-
-  def generation(grid: GridZipper[Int]): GridZipper[Int] = {
-   grid.coflatMap(cellLifecycle)
-  }
-
   def newGrid(values: List[List[Int]]): GridZipper[Int] = {
     GridZipper(fromList(values.map(fromList)))
   }
 
-  def tabulate(fn: ((Int, Int)) => Int): GridZipper[Int] = {
-    val extent = 20
+  def tabulate(fn: (Coordinates) => Int): GridZipper[Int] = {
+    val width = 20
 
-    val coords: List[(Int, Int)] = (for {
-      x <- 0 until extent
-      y <- 0 until extent
+    val coords: List[Coordinates] = (for {
+      x <- 0 until width
+      y <- 0 until width
     } yield (x, y)).toList
 
-    val coordinates: List[List[(Int, Int)]] = coords.grouped(extent).toList
+    val coordinates: List[List[Coordinates]] = coords.grouped(width).toList
 
     newGrid(coordinates.map(_.map(e => fn(e))))
-  }
-
-  def fromList[A](items: List[A]): StreamZipper[A] = {
-    val left = items.take(items.size)
-    val right = items.drop(items.size)
-    StreamZipper(left.tail.toStream, left.head, right.toStream)
   }
 
   def cellString(value: Int): String = {
@@ -67,17 +46,17 @@ object Main extends App {
     }
   }
 
-  val initialState = (glider at(1, 1)) ++ (beacon at(16, 12)) ++ (blinker at(14, 5)) ++ (dieHard at (7,7))
-
-  def setInitial(coord: (Int, Int)): Int =
+  def setInitial(coord: (Int, Int)): Int = {
+    val initialState = (glider at(1, 1)) ++ (beacon at(16, 12)) ++ (blinker at(14, 5)) ++ (dieHard at (7,7))
     initialState.getOrElse(coord, 0)
+  }
 
   def gameLoop(): Unit = {
     val streamGrids: Stream[GridZipper[Int]] = Stream.iterate(tabulate(setInitial))(generation)
     streamGrids.foreach{f =>
       println(render(f))
       println("\u001b")
-      Thread.sleep(300)
+      Thread.sleep(275)
     }
   }
 

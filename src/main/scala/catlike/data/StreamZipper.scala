@@ -48,6 +48,13 @@ case class StreamZipper[A](left: Stream[A], focus: A, right: Stream[A]) {
 }
 
 object StreamZipper {
+
+  def fromList[A](items: List[A]): StreamZipper[A] = {
+    val left = items.take(items.size)
+    val right = items.drop(items.size)
+    StreamZipper(left.tail.toStream, left.head, right.toStream)
+  }
+
   implicit def zipperComonad: Comonad[StreamZipper] = new Comonad[StreamZipper] {
     override def extract[A](w: StreamZipper[A]): A = w.focus
 
