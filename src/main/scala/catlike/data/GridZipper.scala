@@ -49,6 +49,10 @@ case class GridZipper[A](value: StreamZipper[StreamZipper[A]]) {
 
 object GridZipper {
 
+  def fromLists[A](lists: List[List[A]]): GridZipper[A] = {
+    GridZipper(StreamZipper.fromList(lists.map(StreamZipper.fromList)))
+  }
+
   implicit def gridZipperComonad: Comonad[GridZipper] = {
     new Comonad[GridZipper] {
       override def extract[A](w: GridZipper[A]): A = w.value.focus.focus

@@ -2,16 +2,12 @@ package conway
 
 import catlike.data.GridZipper
 import catlike.data.Store.Coordinates
-import catlike.data.StreamZipper._
+
 import conway.Game._
 import conway.Renderer._
 import conway.Swarms._
 
 object Main extends App {
-
-  def newGrid(values: List[List[Int]]): GridZipper[Int] = {
-    GridZipper(fromList(values.map(fromList)))
-  }
 
   def tabulate(fn: (Coordinates) => Int): GridZipper[Int] = {
     val width = 20
@@ -22,8 +18,9 @@ object Main extends App {
     } yield (x, y)).toList
 
     val coordinates: List[List[Coordinates]] = coords.grouped(width).toList
+    val coordinatesToCellValues: List[List[Int]] = coordinates.map(_.map(e => fn(e)))
 
-    newGrid(coordinates.map(_.map(e => fn(e))))
+    GridZipper.fromLists(coordinatesToCellValues)
   }
 
   implicit class InitOps(pairs: Map[Coordinates, Int]) {
@@ -42,7 +39,7 @@ object Main extends App {
     streamGrids.foreach { f =>
       clear
       println(render(f))
-      Thread.sleep(275)
+      frameRate(275)
     }
   }
 
