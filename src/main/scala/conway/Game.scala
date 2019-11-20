@@ -13,10 +13,8 @@ object Game {
    **/
 
   def cellLifecycle(grid: GridZipper[Int]): Int = {
-    val extracted = GridZipper.gridZipperComonad.extract(grid)
-    val neighborList = GridZipper.getNeighbors(grid)
-
-    (neighborList.sum, extracted) match {
+    val neighborList = grid.getNeighbors
+    (neighborList.sum, grid.extract) match {
       case (sum, 1) if sum == 2 || sum == 3 => 1
       case (3, 0) => 1
       case (_, 1) => 0

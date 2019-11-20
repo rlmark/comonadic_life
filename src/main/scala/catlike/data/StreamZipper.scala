@@ -1,6 +1,6 @@
 package catlike.data
 
-import catlike.{Comonad, Monoid}
+import catlike.Comonad
 
 case class StreamZipper[A](left: Stream[A], focus: A, right: Stream[A]) {
   def setFocus(a: A): StreamZipper[A] = {
@@ -47,12 +47,11 @@ case class StreamZipper[A](left: Stream[A], focus: A, right: Stream[A]) {
 
 }
 
-object StreamZipper {
+object StreamZipper extends App  {
 
   def fromList[A](items: List[A]): StreamZipper[A] = {
     val left = items.take(items.size)
-    val right = items.drop(items.size)
-    StreamZipper(left.tail.toStream, left.head, right.toStream)
+    StreamZipper(left.tail.toStream, left.head, Stream.empty)
   }
 
   implicit def zipperComonad: Comonad[StreamZipper] = new Comonad[StreamZipper] {
