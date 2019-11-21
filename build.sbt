@@ -19,7 +19,9 @@ scalacOptions in (Compile, console) --= Seq("-Ywarn-unused:imports", "-Xfatal-wa
 
 libraryDependencies ++= Seq(
   "org.scalatest"           %% "scalatest"                % "3.0.8" % Test,
-  "org.scalactic"           %% "scalactic"                % "3.0.8"
+  "org.scalactic"           %% "scalactic"                % "3.0.8",
+  "org.typelevel"           %% "cats-effect"              % "2.0.0",
+  "co.fs2"                  %% "fs2-core"                 % "2.1.0"
 )
 
 mainClass in (Compile, run) := Some("conway.Main")

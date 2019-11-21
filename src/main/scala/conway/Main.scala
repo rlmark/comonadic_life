@@ -1,14 +1,15 @@
 package conway
 
 import catlike.data.GridZipper
-
+import cats.effect.{ExitCode, IO, IOApp, Sync, Timer}
 import conway.Game._
 import conway.Swarms._
+import fs2.{Stream => StreamF}
+import scala.concurrent.duration._
 
-object Main extends App {
+object Main extends IOApp {
 
   type Coordinates = (Int, Int)
-  val render = new Renderer(Visualization.Ocean)
 
   def tabulate(fn: Coordinates => Int): GridZipper[Int] = {
     val width = 20
@@ -35,10 +36,13 @@ object Main extends App {
     initialState.getOrElse(coord, 0)
   }
 
-  def gameLoop(): Unit = {
-    val streamGrids: Stream[GridZipper[Int]] = Stream.iterate(tabulate(setInitial))(generation)
-    streamGrids.foreach(render.renderFrame)
+  def gameLoop[F[_]: Timer : Sync]: StreamF[F, GridZipper[Int]] = {
+    val render = new Renderer[F](Visualization.Ocean) // pick a visualization
+    StreamF.iterate(tabulate(setInitial))(generation) // run subsequent generations over a seed grid
+      .evalTap(grid => render.renderFrame(grid))  // prints image to console
+      .zipLeft(StreamF.awakeEvery[F](275.millis)) // sets the frame rate
   }
 
-  gameLoop()
+  override def run(args: List[String]): IO[ExitCode] =
+    gameLoop[IO].compile.drain.map(_ => ExitCode.Success)
 }
