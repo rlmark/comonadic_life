@@ -16,7 +16,7 @@ class Renderer[F[_]: Timer: Sync](visualization: Visualization) {
     if (value == 1) alive else background
   }
 
-  def render(grid: GridZipper[Int]): String = {
+  def format(grid: GridZipper[Int]): String = {
     grid.map(i => cellRepresentation(i))
       .value
       .map(_.toList)
@@ -28,7 +28,7 @@ class Renderer[F[_]: Timer: Sync](visualization: Visualization) {
   def renderFrame(gridZipper: GridZipper[Int]): F[Unit] = {
     for {
       _ <- clear
-      _ <- Sync[F].delay(println(render(gridZipper)))
+      _ <- Sync[F].delay(println(format(gridZipper)))
     } yield ()
   }
 }
