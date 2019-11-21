@@ -10,7 +10,7 @@ object Main extends App {
 
   type Coordinates = (Int, Int)
 
-  def tabulate(fn: (Coordinates) => Int): GridZipper[Int] = {
+  def tabulate(fn: Coordinates => Int): GridZipper[Int] = {
     val width = 20
 
     val coords: List[Coordinates] = (for {
@@ -25,8 +25,8 @@ object Main extends App {
   }
 
   implicit class InitOps(pairs: Map[Coordinates, Int]) {
-    def at(coord: Coordinates): Map[Coordinates, Int] = pairs.map {
-      case ((x, y), v) => ((x + coord._1, y + coord._2), v)
+    def at(coordinates: Coordinates): Map[Coordinates, Int] = pairs.map {
+      case ((x, y), v) => ((x + coordinates._1, y + coordinates._2), v)
     }
   }
 
@@ -37,7 +37,7 @@ object Main extends App {
 
   def gameLoop(): Unit = {
     val streamGrids: Stream[GridZipper[Int]] = Stream.iterate(tabulate(setInitial))(generation)
-    streamGrids.foreach(runFrames)
+    streamGrids.foreach(renderFrame)
   }
 
   gameLoop()

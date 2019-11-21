@@ -11,6 +11,7 @@ case class Nel[A](head: A, tail: List[A]) {
   def toList: List[A] = head :: tail
 
   def coflatMap[B](f: Nel[A] => B): Nel[B] = {
+    @scala.annotation.tailrec
     def loop(as: List[A], acc: List[B]): List[B] =
       as match {
         case Nil => acc
@@ -20,6 +21,8 @@ case class Nel[A](head: A, tail: List[A]) {
       }
     Nel(f(this), loop(tail, List.empty[B]))
   }
+
+  def length: Int = 1 + tail.length
 }
 
 object Nel {

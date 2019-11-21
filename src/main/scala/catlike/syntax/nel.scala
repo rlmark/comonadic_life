@@ -4,6 +4,7 @@ import catlike.Comonad
 
 object nel {
   import catlike.data.Nel
+
   implicit class nelComonadSyntax[A](self: Nel[A])(implicit c: Comonad[Nel]) {
     def extract: A = c.extract(self)
 

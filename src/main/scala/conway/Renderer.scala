@@ -3,14 +3,16 @@ package conway
 import catlike.data.GridZipper
 import catlike.syntax.gridZipper._
 import catlike.syntax.streamZipper._
+import conway.Visualization.Ocean
+
 import scala.sys.process._
 
 object Renderer {
   def clear: Int = "clear".!
 
   def cellString(value: Int): String = {
-    val alive = "\uD83E\uDD84"
-    val background = "\uD83C\uDF32"
+    val alive = Ocean.alive
+    val background = Ocean.background
     if (value == 1) alive else background
   }
 
@@ -27,7 +29,7 @@ object Renderer {
     Thread.sleep(millis)
   }
 
-  def runFrames(gridZipper: GridZipper[Int]): Unit = {
+  def renderFrame(gridZipper: GridZipper[Int]): Unit = {
     clear
     println(typeset(gridZipper))
     frameRate(275)

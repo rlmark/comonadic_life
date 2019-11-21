@@ -5,7 +5,7 @@ import org.scalatest._
 class StoreComonadSpec extends FlatSpec with Matchers {
 
   import Store._
-  import catlike.syntax.storeComonad._
+  import catlike.syntax.store._
 
   def isOrigin(coordinates: Coordinates): Boolean = if (coordinates == (0,0)) true else false
   val origin: Coordinates = (0,0)
@@ -21,7 +21,6 @@ class StoreComonadSpec extends FlatSpec with Matchers {
 
   it should "have a valid duplicate" in {
     val nonOriginStore: CoordinateStore[Boolean] = Store(isOrigin, otherCoordinates)
-    // Note: Fix[F[_]] might come in handy if nesting these end up getting more complicated
     val expected: CoordinateStore[CoordinateStore[Boolean]] = Store(Store(isOrigin, _), otherCoordinates)
     nonOriginStore.duplicate shouldBe expected
   }
