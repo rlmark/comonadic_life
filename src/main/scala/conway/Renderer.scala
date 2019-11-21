@@ -7,17 +7,17 @@ import conway.Visualization.Ocean
 
 import scala.sys.process._
 
-object Renderer {
+class Renderer(visualization: Visualization) {
   def clear: Int = "clear".!
 
-  def cellString(value: Int): String = {
-    val alive = Ocean.alive
-    val background = Ocean.background
+  def cellRepresentation(value: Int): String = {
+    val alive = visualization.alive
+    val background = visualization.background
     if (value == 1) alive else background
   }
 
-  def typeset(grid: GridZipper[Int]): String = {
-    grid.map(i => cellString(i))
+  def render(grid: GridZipper[Int]): String = {
+    grid.map(i => cellRepresentation(i))
       .value
       .map(_.toList)
       .toList
@@ -31,7 +31,7 @@ object Renderer {
 
   def renderFrame(gridZipper: GridZipper[Int]): Unit = {
     clear
-    println(typeset(gridZipper))
+    println(render(gridZipper))
     frameRate(275)
   }
 }
