@@ -3,7 +3,6 @@ package conway
 import catlike.data.GridZipper
 import catlike.syntax.gridZipper._
 import catlike.syntax.streamZipper._
-import conway.Visualization.Ocean
 
 import scala.sys.process._
 

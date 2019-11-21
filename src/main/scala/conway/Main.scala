@@ -3,12 +3,12 @@ package conway
 import catlike.data.GridZipper
 
 import conway.Game._
-import conway.Renderer._
 import conway.Swarms._
 
 object Main extends App {
 
   type Coordinates = (Int, Int)
+  val render = new Renderer(Visualization.Ocean)
 
   def tabulate(fn: Coordinates => Int): GridZipper[Int] = {
     val width = 20
@@ -37,7 +37,7 @@ object Main extends App {
 
   def gameLoop(): Unit = {
     val streamGrids: Stream[GridZipper[Int]] = Stream.iterate(tabulate(setInitial))(generation)
-    streamGrids.foreach(renderFrame)
+    streamGrids.foreach(render.renderFrame)
   }
 
   gameLoop()
