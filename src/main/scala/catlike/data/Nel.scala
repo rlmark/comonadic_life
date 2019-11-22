@@ -38,8 +38,6 @@ object Nel {
 
       override def duplicate[A](w: Nel[A]): Nel[Nel[A]] = w.coflatMap(identity[Nel[A]])
 
-      override def coflatMap[A, B](w: Nel[A])(f: Nel[A] => B): Nel[B] = map(duplicate(w))(f)
-
       override def map[A, B](fa: Nel[A])(f: A => B): Nel[B] = {
         Nel(f(fa.head), fa.tail.map(f))
       }

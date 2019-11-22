@@ -25,8 +25,6 @@ object Matrix {
         Matrix(nestedNel, w.focus)
       }
 
-      override def coflatMap[A, B](w: Matrix[A])(f: Matrix[A] => B): Matrix[B] = map(duplicate(w))(f)
-
       override def map[A, B](fa: Matrix[A])(f: A => B): Matrix[B] = Matrix(fa.value.map(_.map(f)), fa.focus)
     }
   }
