@@ -47,11 +47,10 @@ case class StreamZipper[A](left: Stream[A], focus: A, right: Stream[A]) {
 
 }
 
-object StreamZipper extends App  {
-
+object StreamZipper {
   def fromList[A](items: List[A]): StreamZipper[A] = {
-    val left = items.take(items.size)
-    StreamZipper(left.tail.toStream, left.head, Stream.empty)
+    // Will throw if items is empty, so beware!
+    StreamZipper(items.tail.toStream, items.head, Stream.empty)
   }
 
   implicit def zipperComonad: Comonad[StreamZipper] = new Comonad[StreamZipper] {
