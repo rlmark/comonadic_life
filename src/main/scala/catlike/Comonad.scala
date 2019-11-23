@@ -29,10 +29,6 @@ trait Comonad[W[_]] extends Functor[W] {
   // given an value in a context and a function which transforms and extracts the value,
   // return the transformed value in the context
   def coflatMap[A,B](w: W[A])(f: W[A] => B): W[B]  = {
-    val duplicated: W[W[A]] = duplicate(w)
-
-    map(duplicated)(f)
     map(duplicate(w))(f)
-
   }
 }
