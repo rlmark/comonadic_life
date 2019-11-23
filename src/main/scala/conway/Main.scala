@@ -42,10 +42,7 @@ object Main extends IOApp {
 
   def gameLoop[F[_] : Timer : Sync]: StreamF[F, GridZipper[Int]] = {
     val render = new Renderer[F](Visualization.Ocean) // pick a visualization
-    val initial: GridZipper[Int] = buildGrid { case (x, y) => setCellValue((x, y)) }
-    import catlike.syntax.gridZipper._
-    initial.coflatMap(generation)
-    StreamF.iterate(initial)(generation) // run subsequent generations over a seed grid
+    StreamF.iterate(buildGrid(setCellValue))(generation) // run subsequent generations over a seed grid
       .evalTap(grid => render.renderFrame(grid)) // prints image to console
       .zipLeft(StreamF.awakeEvery[F](300000000.millis)) // sets the frame rate
   }
