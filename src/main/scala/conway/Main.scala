@@ -44,7 +44,7 @@ object Main extends IOApp {
     val render = new Renderer[F](Visualization.Ocean) // pick a visualization
     StreamF.iterate(buildGrid(setCellValue))(generation) // run subsequent generations over a seed grid
       .evalTap(grid => render.renderFrame(grid)) // prints image to console
-      .zipLeft(StreamF.awakeEvery[F](300000000.millis)) // sets the frame rate
+      .zipLeft(StreamF.awakeEvery[F](300.millis)) // sets the frame rate
   }
 
   override def run(args: List[String]): IO[ExitCode] =
