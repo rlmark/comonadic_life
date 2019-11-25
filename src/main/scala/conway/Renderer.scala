@@ -52,15 +52,16 @@ class Console[F[_] : Sync] {
   }
 
   def getUserShape: F[Map[Coordinates, Int]] = {
+    def listPatterns: String = {
+      val strings: List[String] = Patterns.patterns.map(p => s"${p.value} for ${p.toString}")
+      strings.mkString("\n")
+    }
     for {
       _ <- Sync[F].delay(println("Select a shape"))
-      _ <- Sync[F].delay(println("Enter 1 for Blinker, 2 for Glider")) // TODO, full set of shapes
+      _ <- Sync[F].delay(println(
+        s"Enter $listPatterns"))
       int <- readInt
-    } yield (
-      if (int == 1) Swarms.blinker
-      else if (int == 2) Swarms.glider
-      else Swarms.dieHard
-      )
+    } yield Patterns(int).shape
   }
 
   def getCoordinates: F[Coordinates] = {
@@ -88,7 +89,7 @@ class Console[F[_] : Sync] {
   def placeUserShapes: F[Map[Coordinates, Int]] = {
     def loop(acc: Map[Coordinates, Int]): F[Map[Coordinates, Int]] = {
       for {
-        currentShape <- setShapeAtCoordinates
+        currentShape <- setShapeAtCoordinates // TODO, press any other key to continue
         _ <- Sync[F].delay(println("Press 0 when done setting board, press any other Int to continue"))
         int <- readInt
         coordinateMap <- if (int == 0) Sync[F].delay(acc ++ currentShape) else loop(acc ++ currentShape)
