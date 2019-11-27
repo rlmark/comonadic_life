@@ -95,6 +95,29 @@ class GridZipperSpec extends FlatSpec with Matchers {
     // GridZ[StreamZ[StreamZ[GridZ[StreamZ[StreamZ[Int]]]]]]]
     gridZipper.duplicate shouldBe expectedGridZipper
   }
+  it should "have right identity" in {
+    val streamZipper = Zipper(Stream(), 2, Stream())
+    val largeStreamZipper: Zipper[Zipper[Int]] = streamZipper.duplicate
+    val gridZipper = GridZipper(largeStreamZipper)
+
+    gridZipper.coflatMap(_.extract) shouldBe gridZipper
+  }
+  it should "have left identity" in {
+    val streamZipper = Zipper(Stream(), 2, Stream())
+    val largeStreamZipper: Zipper[Zipper[Int]] = streamZipper.duplicate
+    val gridZipper = GridZipper(largeStreamZipper)
+
+    gridZipper.coflatMap(_.extract) shouldBe gridZipper
+
+    gridZipper.duplicate.extract shouldBe gridZipper
+  }
+  it should "have associativity" in {
+    val streamZipper = Zipper(Stream(), 2, Stream())
+    val largeStreamZipper: Zipper[Zipper[Int]] = streamZipper.duplicate
+    val gridZipper = GridZipper(largeStreamZipper)
+
+    gridZipper.duplicate.duplicate shouldBe gridZipper.coflatMap(_.duplicate)
+  }
   it should "have valid coflatmap" in {
     val streamZipper = Zipper(Stream(), 2, Stream())
     val largeStreamZipper: Zipper[Zipper[Int]] = streamZipper.duplicate

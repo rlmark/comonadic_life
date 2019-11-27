@@ -15,9 +15,6 @@ class ZipperSpec extends FlatSpec with Matchers {
   it should "shift focus right" in {
     initialZipper.moveRight shouldBe Zipper(Stream(5,4,3,2,1), 6, Stream(7,8))
   }
-  it should "pretty print the zipper intuitively" in {
-    initialZipper.prettyPrint should include("1, 2, 3, 4 (5) 6, 7, 8")
-  }
   it should "create a list from the zipper intuitively" in {
     initialZipper.toList shouldBe List(1,2,3,4,5,6,7,8)
   }
