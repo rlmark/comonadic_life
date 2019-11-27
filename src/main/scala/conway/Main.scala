@@ -4,7 +4,7 @@ import catlike.data.GridZipper
 import cats.effect.{ExitCode, IO, IOApp, Sync, Timer}
 import cats.syntax.all._
 import conway.Game._
-import fs2.{Stream => StreamF}
+import fs2.Stream
 import catlike.syntax.gridZipper._
 
 import scala.concurrent.duration._
@@ -14,12 +14,10 @@ object Main extends IOApp {
   type Coordinates = (Int, Int)
 
   def createCoordinateLists(width: Int): List[List[Coordinates]] = {
-
     val coords: List[Coordinates] = (for {
       x <- 0 until width
       y <- 0 until width
     } yield (x, y)).toList
-
     coords.grouped(width).toList
   }
 
@@ -39,7 +37,7 @@ object Main extends IOApp {
     initialStateMap.getOrElse(coord, 0)
   }
 
-  def gameLoop[F[_] : Timer : Sync]: F[StreamF[F, GridZipper[Int]]] = {
+  def gameLoop[F[_] : Timer : Sync]: F[Stream[F, GridZipper[Int]]] = {
     val console = new Console[F]()
     for {
       vis <- console.getVisualization
@@ -47,11 +45,11 @@ object Main extends IOApp {
       userShapeInput <- console.placeUserShapes
     } yield {
       val render = new Renderer[F](vis)
-      StreamF.iterate(
-        buildGrid(setCellValue(_ , userShapeInput), width) // build initial grid with user presents
-      )(generation) // run subsequent generations over the seed grid
+      Stream.iterate(
+        buildGrid(coordinates => setCellValue(coordinates, userShapeInput), width) // build initial grid with user presents
+      )(nextGeneration) // run subsequent generations over the seed grid
         .evalTap(grid => render.renderFrame(grid)) // prints image to console
-        .zipLeft(StreamF.awakeEvery[F](300.millis)) // sets the frame rate
+        .zipLeft(Stream.awakeEvery[F](325.millis)) // sets the frame rate
     }
   }
 

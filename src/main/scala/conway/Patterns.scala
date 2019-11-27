@@ -8,7 +8,6 @@ sealed trait Patterns {
 }
 
 object Patterns {
-
   case object Glider extends Patterns {
     val shape: Map[Coordinates, Int] = Map(
       (1, 0) -> 1,

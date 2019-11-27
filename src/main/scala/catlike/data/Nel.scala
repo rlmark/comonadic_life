@@ -3,7 +3,6 @@ package catlike.data
 import catlike.Comonad
 
 case class Nel[A](head: A, tail: List[A]) {
-  // Note: not safe op
   def at(i: Int): A = {
     if (i == 0) head else tail(i + 1)
   }

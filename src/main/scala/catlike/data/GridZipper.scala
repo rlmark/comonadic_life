@@ -1,6 +1,6 @@
 package catlike.data
 
-import catlike.{Comonad, Monoid}
+import catlike.Comonad
 import catlike.data.StreamZipper._
 import catlike.syntax.gridZipper._
 import catlike.syntax.streamZipper._

@@ -22,7 +22,7 @@ object Game {
     }
   }
 
-  def generation(grid: GridZipper[Int]): GridZipper[Int] = {
+  def nextGeneration(grid: GridZipper[Int]): GridZipper[Int] = {
     grid.coflatMap(cellLifecycle)
   }
 }
