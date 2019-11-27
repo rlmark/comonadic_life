@@ -3,9 +3,9 @@ package typeclasses.data
 import typeclasses.Comonad
 import typeclasses.data.Zipper._
 import typeclasses.syntax.gridZipper._
-import typeclasses.syntax.streamZipper._
+import typeclasses.syntax.zipper._
 
-// 2 dimensions represented by nested StreamZippers
+// 2 dimensions represented by nested Zippers
 case class GridZipper[A](value: Zipper[Zipper[A]]) {
 
   def setFocus(a: A): GridZipper[A] = {

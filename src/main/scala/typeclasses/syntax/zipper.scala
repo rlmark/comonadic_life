@@ -1,11 +1,10 @@
 package typeclasses.syntax
 
 import typeclasses.Comonad
+import typeclasses.data.Zipper
 
-object streamZipper {
-  import typeclasses.data.Zipper
-
-  implicit class streamZipperSyntax[A](self: Zipper[A])(implicit c: Comonad[Zipper]) {
+object zipper {
+  implicit class zipperSyntax[A](self: Zipper[A])(implicit c: Comonad[Zipper]) {
     def extract: A = c.extract(self)
 
     def duplicate: Zipper[Zipper[A]] = c.duplicate(self)

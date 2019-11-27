@@ -4,7 +4,7 @@ import typeclasses.data.{GridZipper, Zipper}
 import conway.Game.cellLifecycle
 import org.scalatest._
 import typeclasses.syntax.gridZipper._
-import typeclasses.syntax.streamZipper._
+import typeclasses.syntax.zipper._
 
 class GameSpec extends FlatSpec with Matchers {
   val lrStream: Stream[Int] = Stream.fill(3)(0)

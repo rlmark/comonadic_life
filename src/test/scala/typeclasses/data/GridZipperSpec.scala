@@ -2,7 +2,7 @@ package typeclasses.data
 
 import typeclasses.data.Zipper._
 import typeclasses.syntax.gridZipper._
-import typeclasses.syntax.streamZipper._
+import typeclasses.syntax.zipper._
 import org.scalatest._
 
 class GridZipperSpec extends FlatSpec with Matchers {

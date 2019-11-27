@@ -1,11 +1,11 @@
 package conway
 
 import typeclasses.data.GridZipper
+import typeclasses.syntax.gridZipper._
 import cats.effect.{ExitCode, IO, IOApp, Sync, Timer}
 import cats.syntax.all._
 import conway.Game._
 import fs2.Stream
-import typeclasses.syntax.gridZipper._
 
 import scala.concurrent.duration._
 
@@ -27,11 +27,6 @@ object Main extends IOApp {
     gridZipperCoordinates.map(setCellValue)
   }
 
-  implicit class InitOps(presetShapes: Map[Coordinates, Int]) {
-    def at(coordinates: Coordinates): Map[Coordinates, Int] = presetShapes.map {
-      case ((x, y), v) => ((x + coordinates._2, y + coordinates._1), v)
-    }
-  }
 
   def setCellValue(coord: (Int, Int), initialStateMap: Map[Coordinates, Int]): Int = {
     initialStateMap.getOrElse(coord, 0)

@@ -1,13 +1,13 @@
 package typeclasses.data
 
 import org.scalatest._
-import typeclasses.syntax.streamZipper._
+import typeclasses.syntax.zipper._
 
 class ZipperComonadSpec extends FlatSpec with Matchers {
 
   val initialZipper: Zipper[Int] = Zipper(Stream(4,3,2,1), 5, Stream(6,7,8))
 
-  "StreamZipperComonad" should "have a valid extract" in {
+  "ZipperComonad" should "have a valid extract" in {
     initialZipper.extract shouldBe 5
   }
   it should "have a valid duplicate" in {

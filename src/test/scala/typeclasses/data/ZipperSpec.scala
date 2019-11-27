@@ -6,7 +6,7 @@ class ZipperSpec extends FlatSpec with Matchers {
 
   val initialZipper: Zipper[Int] = Zipper(Stream(4,3,2,1), 5, Stream(6,7,8))
 
-  "catlike.instances.StreamZipper" should "have valid focus" in {
+  "Zipper" should "have valid focus" in {
     initialZipper.focus shouldBe 5
   }
   it should "shift focus left" in {

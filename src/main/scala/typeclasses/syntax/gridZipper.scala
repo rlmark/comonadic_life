@@ -1,10 +1,9 @@
 package typeclasses.syntax
 
 import typeclasses.Comonad
+import typeclasses.data.GridZipper
 
 object gridZipper {
-  import typeclasses.data.GridZipper
-
   implicit class gridZipperSyntax[A](self: GridZipper[A])(implicit c: Comonad[GridZipper]) {
     def extract: A = c.extract(self)
 
