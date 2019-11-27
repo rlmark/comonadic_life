@@ -1,11 +1,11 @@
 package conway
 
-import catlike.data.GridZipper
+import typeclasses.data.GridZipper
 import cats.effect.{ExitCode, IO, IOApp, Sync, Timer}
 import cats.syntax.all._
 import conway.Game._
 import fs2.Stream
-import catlike.syntax.gridZipper._
+import typeclasses.syntax.gridZipper._
 
 import scala.concurrent.duration._
 

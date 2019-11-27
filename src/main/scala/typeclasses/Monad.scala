@@ -1,4 +1,4 @@
-package catlike
+package typeclasses
 
 trait Monad[M[_]] extends Functor[M] {
   def pure[A](a: A): M[A]

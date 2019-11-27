@@ -1,7 +1,7 @@
-package catlike.data
+package typeclasses.data
 
-import catlike.Functor
-import catlike.data.Store.Coordinates
+import typeclasses.Functor
+import typeclasses.data.Store.Coordinates
 
 case class Matrix[A](value: Nel[Nel[A]], focus: Coordinates) {
   // Technically unsafe, maybe integrate modulo logic here.
@@ -10,7 +10,7 @@ case class Matrix[A](value: Nel[Nel[A]], focus: Coordinates) {
 
 object Matrix {
   import Nel._
-  import catlike.syntax.nel._
+  import typeclasses.syntax.nel._
 
   implicit def matrixFunctorInstance: Functor[Matrix] = {
     new Functor[Matrix] {

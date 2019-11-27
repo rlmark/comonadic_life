@@ -1,7 +1,7 @@
-package catlike.data
+package typeclasses.data
 
 import org.scalatest._
-import catlike.syntax.streamZipper._
+import typeclasses.syntax.streamZipper._
 
 class ZipperComonadSpec extends FlatSpec with Matchers {
 

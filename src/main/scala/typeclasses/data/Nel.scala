@@ -1,6 +1,6 @@
-package catlike.data
+package typeclasses.data
 
-import catlike.Comonad
+import typeclasses.Comonad
 
 case class Nel[A](head: A, tail: List[A]) {
   def at(i: Int): A = {

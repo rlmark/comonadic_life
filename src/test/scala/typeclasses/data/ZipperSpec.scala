@@ -1,4 +1,4 @@
-package catlike.data
+package typeclasses.data
 
 import org.scalatest._
 

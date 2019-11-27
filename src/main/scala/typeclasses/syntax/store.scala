@@ -1,9 +1,9 @@
-package catlike.syntax
+package typeclasses.syntax
 
-import catlike.Comonad
+import typeclasses.Comonad
 
 object store {
-  import catlike.data.Store._
+  import typeclasses.data.Store._
 
   implicit class storeComonadSyntax[A](self: CoordinateStore[A])(implicit c: Comonad[CoordinateStore]) {
     def extract: A = c.extract(self)

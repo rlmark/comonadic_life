@@ -1,10 +1,10 @@
 package conway
 
-import catlike.data.{GridZipper, Zipper}
+import typeclasses.data.{GridZipper, Zipper}
 import conway.Game.cellLifecycle
 import org.scalatest._
-import catlike.syntax.gridZipper._
-import catlike.syntax.streamZipper._
+import typeclasses.syntax.gridZipper._
+import typeclasses.syntax.streamZipper._
 
 class GameSpec extends FlatSpec with Matchers {
   val lrStream: Stream[Int] = Stream.fill(3)(0)

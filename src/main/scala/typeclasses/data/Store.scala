@@ -1,6 +1,6 @@
-package catlike.data
+package typeclasses.data
 
-import catlike.Comonad
+import typeclasses.Comonad
 
 case class Store[S, A](query: S => A, index: S) {
   def extract: A = query(index)

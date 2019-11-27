@@ -1,8 +1,8 @@
 package conway
 
-import catlike.data.GridZipper
-import catlike.data.GridZipper._
-import catlike.syntax.gridZipper._
+import typeclasses.data.GridZipper
+import typeclasses.data.GridZipper._
+import typeclasses.syntax.gridZipper._
 
 object Game {
 

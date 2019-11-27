@@ -1,8 +1,8 @@
-package catlike.data
+package typeclasses.data
 
-import catlike.data.Zipper._
-import catlike.syntax.gridZipper._
-import catlike.syntax.streamZipper._
+import typeclasses.data.Zipper._
+import typeclasses.syntax.gridZipper._
+import typeclasses.syntax.streamZipper._
 import org.scalatest._
 
 class GridZipperSpec extends FlatSpec with Matchers {

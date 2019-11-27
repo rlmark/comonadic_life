@@ -1,4 +1,4 @@
-package catlike
+package typeclasses
 
 trait Monoid[A] {
   def empty: A

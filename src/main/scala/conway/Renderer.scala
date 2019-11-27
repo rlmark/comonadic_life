@@ -1,8 +1,8 @@
 package conway
 
-import catlike.data.GridZipper
-import catlike.syntax.gridZipper._
-import catlike.syntax.streamZipper._
+import typeclasses.data.GridZipper
+import typeclasses.syntax.gridZipper._
+import typeclasses.syntax.streamZipper._
 import cats.effect.Sync
 import cats.syntax.all._
 import conway.Main.Coordinates
@@ -76,10 +76,10 @@ class Console[F[_] : Sync] {
           (x, y)
         }
       }.handleErrorWith(_ => getCoordinates)
-    } yield (coordinates)
+    } yield coordinates
   }
 
-  def setShapeAtCoordinates: F[Map[Coordinates, Int]] = {
+  def setShapeAtCoordinates(): F[Map[Coordinates, Int]] = {
     for {
       userShape <- getUserShape
       coordinates <- getCoordinates
@@ -89,11 +89,11 @@ class Console[F[_] : Sync] {
   def placeUserShapes: F[Map[Coordinates, Int]] = {
     def loop(acc: Map[Coordinates, Int]): F[Map[Coordinates, Int]] = {
       for {
-        currentShape <- setShapeAtCoordinates // TODO, press any other key to continue
+        currentShape <- setShapeAtCoordinates() // TODO, press any other key to continue
         _ <- Sync[F].delay(println("Press 0 when done setting board, press any other Int to continue"))
         int <- readInt
         coordinateMap <- if (int == 0) Sync[F].delay(acc ++ currentShape) else loop(acc ++ currentShape)
-      } yield (coordinateMap)
+      } yield coordinateMap
     }
     loop(Map.empty)
   }

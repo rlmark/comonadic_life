@@ -1,6 +1,6 @@
-package catlike.data
+package typeclasses.data
 
-import catlike.Representable
+import typeclasses.Representable
 
 case class RepresentableStore[F[_], S, A](fa: F[A], index: S)(implicit R: Representable.Aux[F, S]) {
   def peek(s: S): A = R.index(fa)(s)

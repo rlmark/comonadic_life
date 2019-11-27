@@ -1,9 +1,9 @@
-package catlike.syntax
+package typeclasses.syntax
 
-import catlike.Comonad
+import typeclasses.Comonad
 
 object streamZipper {
-  import catlike.data.Zipper
+  import typeclasses.data.Zipper
 
   implicit class streamZipperSyntax[A](self: Zipper[A])(implicit c: Comonad[Zipper]) {
     def extract: A = c.extract(self)

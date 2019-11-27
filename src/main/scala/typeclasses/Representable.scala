@@ -1,4 +1,4 @@
-package catlike
+package typeclasses
 
 trait Representable[F[_]] {
   type Representation

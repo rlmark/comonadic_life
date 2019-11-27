@@ -1,6 +1,6 @@
-package catlike.data
+package typeclasses.data
 
-import catlike.Comonad
+import typeclasses.Comonad
 
 case class Zipper[A](left: Stream[A], focus: A, right: Stream[A]) {
   def setFocus(a: A): Zipper[A] = {
@@ -12,9 +12,8 @@ case class Zipper[A](left: Stream[A], focus: A, right: Stream[A]) {
     else Zipper(focus #:: left , right.head, right.tail)
   }
 
-  // Maybe these should have an implicit monoid instance of A so we know what to do when it's empty.
   def moveLeft: Zipper[A] = {
-    if (left.isEmpty) this // This might become a problem
+    if (left.isEmpty) this
     else Zipper(left.tail, left.head, focus #:: right)
   }
 

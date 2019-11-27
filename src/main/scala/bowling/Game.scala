@@ -1,7 +1,7 @@
 package bowling
 
-import catlike.data.Zipper
-import catlike.syntax.streamZipper._
+import typeclasses.data.Zipper
+import typeclasses.syntax.streamZipper._
 import ScoreHelpers._
 
 object Game extends App {

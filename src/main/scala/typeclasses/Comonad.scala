@@ -1,4 +1,4 @@
-package catlike
+package typeclasses
 
 // Comonads have a Functor instance
 trait Comonad[W[_]] extends Functor[W] {

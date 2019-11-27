@@ -1,11 +1,11 @@
-package catlike.data
+package typeclasses.data
 
 import org.scalatest._
 
 class StoreComonadSpec extends FlatSpec with Matchers {
 
   import Store._
-  import catlike.syntax.store._
+  import typeclasses.syntax.store._
 
   def isOrigin(coordinates: Coordinates): Boolean = if (coordinates == (0,0)) true else false
   val origin: Coordinates = (0,0)

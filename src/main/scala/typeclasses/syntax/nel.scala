@@ -1,9 +1,9 @@
-package catlike.syntax
+package typeclasses.syntax
 
-import catlike.Comonad
+import typeclasses.Comonad
 
 object nel {
-  import catlike.data.Nel
+  import typeclasses.data.Nel
 
   implicit class nelComonadSyntax[A](self: Nel[A])(implicit c: Comonad[Nel]) {
     def extract: A = c.extract(self)
