@@ -3,25 +3,25 @@ package catlike.data
 import org.scalatest._
 import catlike.syntax.streamZipper._
 
-class StreamZipperComonadSpec extends FlatSpec with Matchers {
+class ZipperComonadSpec extends FlatSpec with Matchers {
 
-  val initialZipper: StreamZipper[Int] = StreamZipper(Stream(4,3,2,1), 5, Stream(6,7,8))
+  val initialZipper: Zipper[Int] = Zipper(Stream(4,3,2,1), 5, Stream(6,7,8))
 
   "StreamZipperComonad" should "have a valid extract" in {
     initialZipper.extract shouldBe 5
   }
   it should "have a valid duplicate" in {
-    val smallZipper: StreamZipper[Int] = StreamZipper(Stream(1), 2, Stream(3))
+    val smallZipper: Zipper[Int] = Zipper(Stream(1), 2, Stream(3))
 
-    val expected = StreamZipper(
-      Stream(StreamZipper(Stream.empty, 1, Stream(2,3))),
+    val expected = Zipper(
+      Stream(Zipper(Stream.empty, 1, Stream(2,3))),
       smallZipper,
-      Stream(StreamZipper(Stream(2,1), 3, Stream.empty))
+      Stream(Zipper(Stream(2,1), 3, Stream.empty))
     )
     smallZipper.duplicate shouldBe expected
   }
   it should "have valid coflatMap" in {
-    def sumLeftRight(streamZ: StreamZipper[Int]): Int = {
+    def sumLeftRight(streamZ: Zipper[Int]): Int = {
       streamZ.focus + streamZ.moveLeft.focus + streamZ.moveRight.focus
     }
     // Note: the leftmost and rightmost values lack an identity element for what to do in the case where the stream is empty

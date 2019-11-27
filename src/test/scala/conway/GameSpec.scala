@@ -1,6 +1,6 @@
 package conway
 
-import catlike.data.{GridZipper, StreamZipper}
+import catlike.data.{GridZipper, Zipper}
 import conway.Game.cellLifecycle
 import org.scalatest._
 import catlike.syntax.gridZipper._
@@ -8,7 +8,7 @@ import catlike.syntax.streamZipper._
 
 class GameSpec extends FlatSpec with Matchers {
   val lrStream: Stream[Int] = Stream.fill(3)(0)
-  val streamOfStreams: StreamZipper[StreamZipper[Int]] = StreamZipper(lrStream, 0, lrStream).duplicate
+  val streamOfStreams: Zipper[Zipper[Int]] = Zipper(lrStream, 0, lrStream).duplicate
   val basicGrid = GridZipper(streamOfStreams)
 
   "cellLifecycle" should "keep board of all 0's the same" in {

@@ -1,15 +1,15 @@
 package catlike.data
 
 import catlike.Comonad
-import catlike.data.StreamZipper._
+import catlike.data.Zipper._
 import catlike.syntax.gridZipper._
 import catlike.syntax.streamZipper._
 
 // 2 dimensions represented by nested StreamZippers
-case class GridZipper[A](value: StreamZipper[StreamZipper[A]]) {
+case class GridZipper[A](value: Zipper[Zipper[A]]) {
 
   def setFocus(a: A): GridZipper[A] = {
-    val inner: StreamZipper[A] = value.focus.setFocus(a)
+    val inner: Zipper[A] = value.focus.setFocus(a)
     GridZipper(value.setFocus(inner))
   }
 
@@ -50,7 +50,7 @@ case class GridZipper[A](value: StreamZipper[StreamZipper[A]]) {
 object GridZipper {
 
   def fromLists[A](lists: List[List[A]]): GridZipper[A] = {
-    GridZipper(StreamZipper.fromList(lists.map(StreamZipper.fromList)))
+    GridZipper(Zipper.fromList(lists.map(Zipper.fromList)))
   }
 
   implicit def gridZipperComonad: Comonad[GridZipper] = {
@@ -58,29 +58,29 @@ object GridZipper {
       override def extract[A](w: GridZipper[A]): A = w.value.focus.focus
 
       override def duplicate[A](w: GridZipper[A]): GridZipper[GridZipper[A]] = {
-        val s1: StreamZipper[StreamZipper[StreamZipper[A]]] = nest(w.value)
-        val s2: StreamZipper[StreamZipper[StreamZipper[StreamZipper[A]]]] = nest(s1)
-        val g1: GridZipper[StreamZipper[StreamZipper[A]]] = GridZipper(s2)
+        val s1: Zipper[Zipper[Zipper[A]]] = nest(w.value)
+        val s2: Zipper[Zipper[Zipper[Zipper[A]]]] = nest(s1)
+        val g1: GridZipper[Zipper[Zipper[A]]] = GridZipper(s2)
         val g2: GridZipper[GridZipper[A]] = map(g1)(GridZipper(_))
         g2
       }
 
       override def map[A, B](fa: GridZipper[A])(f: A => B): GridZipper[B] = GridZipper(fa.value.map(s => s.map(f)))
 
-      private def nest[A](s: StreamZipper[StreamZipper[A]]): StreamZipper[StreamZipper[StreamZipper[A]]] = {
-        val duplicateLefts: Stream[StreamZipper[StreamZipper[A]]] =
+      private def nest[A](s: Zipper[Zipper[A]]): Zipper[Zipper[Zipper[A]]] = {
+        val duplicateLefts: Stream[Zipper[Zipper[A]]] =
           Stream.iterate(s)(current => current.map(_.moveLeft))
           .tail
           .zip(s.left)
           .map(_._1)
 
-        val duplicateRights: Stream[StreamZipper[StreamZipper[A]]] =
+        val duplicateRights: Stream[Zipper[Zipper[A]]] =
           Stream.iterate(s)(current => current.map(_.moveRight))
           .tail
           .zip(s.right)
           .map(_._1)
 
-        StreamZipper(duplicateLefts, s, duplicateRights)
+        Zipper(duplicateLefts, s, duplicateRights)
       }
     }
   }

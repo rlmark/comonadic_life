@@ -1,6 +1,6 @@
 package bowling
 
-import catlike.data.StreamZipper
+import catlike.data.Zipper
 import catlike.syntax.streamZipper._
 import ScoreHelpers._
 
@@ -12,9 +12,9 @@ object Game extends App {
 
   // NOTE: this is probably a sign that StreamZipper is an overpowered data structure for what I'm doing
   // TODO: It's likely that the comonad I need is the one for NonEmptyList.
-  val frameZipperToScore: StreamZipper[Frame] = StreamZipper(playerTurns.tail, playerTurns.head, Stream.empty)
+  val frameZipperToScore: Zipper[Frame] = Zipper(playerTurns.tail, playerTurns.head, Stream.empty)
 
-  def calculateScore(frames: StreamZipper[Frame]): Int = {
+  def calculateScore(frames: Zipper[Frame]): Int = {
     val Frame(frame, turnPoints) = frames.focus
     val currentFramePoints = turnPoints.sum
     if (frame == 10)
@@ -27,7 +27,7 @@ object Game extends App {
       val leftStream: Stream[Int] = frames
         .duplicate
         .left
-        .flatMap((s: StreamZipper[Frame]) =>
+        .flatMap((s: Zipper[Frame]) =>
           s.focus.pinsDown.toStream
         )
       val next2: Stream[Int] = leftStream.take(2)
@@ -40,7 +40,7 @@ object Game extends App {
     else currentFramePoints
   }
 
-  val scoreAll: StreamZipper[Int] = frameZipperToScore.coflatMap(calculateScore)
+  val scoreAll: Zipper[Int] = frameZipperToScore.coflatMap(calculateScore)
   val frameScores = scoreAll.focus +: scoreAll.left.toList
 
   println(s"The player's frames are: ${playerTurns.toList}")

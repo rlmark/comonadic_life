@@ -3,15 +3,15 @@ package catlike.syntax
 import catlike.Comonad
 
 object streamZipper {
-  import catlike.data.StreamZipper
+  import catlike.data.Zipper
 
-  implicit class streamZipperSyntax[A](self: StreamZipper[A])(implicit c: Comonad[StreamZipper]) {
+  implicit class streamZipperSyntax[A](self: Zipper[A])(implicit c: Comonad[Zipper]) {
     def extract: A = c.extract(self)
 
-    def duplicate: StreamZipper[StreamZipper[A]] = c.duplicate(self)
+    def duplicate: Zipper[Zipper[A]] = c.duplicate(self)
 
-    def coflatMap[B](f: StreamZipper[A] => B): StreamZipper[B] = c.coflatMap(self)(f)
+    def coflatMap[B](f: Zipper[A] => B): Zipper[B] = c.coflatMap(self)(f)
 
-    def map[B](f: A => B): StreamZipper[B] = c.map(self)(f)
+    def map[B](f: A => B): Zipper[B] = c.map(self)(f)
   }
 }
