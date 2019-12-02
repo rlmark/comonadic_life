@@ -68,17 +68,20 @@ object GridZipper {
       override def map[A, B](fa: GridZipper[A])(f: A => B): GridZipper[B] = GridZipper(fa.value.map(s => s.map(f)))
 
       private def nest[A](s: Zipper[Zipper[A]]): Zipper[Zipper[Zipper[A]]] = {
-        val duplicateLefts: Stream[Zipper[Zipper[A]]] =
+        val duplicateLefts: Stream[Zipper[Zipper[A]]] = {
+//          Zipper.unfold(s)(z => z.maybeLeft.flatMap(y =>  y.maybeLeft.map(x => (x,x))))
           Stream.iterate(s)(current => current.map(_.moveLeft))
-          .tail
-          .zip(s.left)
-          .map(_._1)
+            .tail
+            .zip(s.left)
+            .map(_._1)
+        }
 
         val duplicateRights: Stream[Zipper[Zipper[A]]] =
-          Stream.iterate(s)(current => current.map(_.moveRight))
-          .tail
-          .zip(s.right)
-          .map(_._1)
+//          Zipper.unfold(s)(z => z.maybeRight.flatMap(y => y.maybeRight.map(x => (x,x))))
+        Stream.iterate(s)(current => current.map(_.moveRight))
+            .tail
+            .zip(s.right)
+            .map(_._1)
 
         Zipper(duplicateLefts, s, duplicateRights)
       }

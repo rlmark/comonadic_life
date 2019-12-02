@@ -20,11 +20,19 @@ class ZipperComonadSpec extends FlatSpec with Matchers {
     )
     smallZipper.duplicate shouldBe expected
   }
+  it should "have valid right identity" in {
+    initialZipper.coflatMap(_.extract) shouldBe initialZipper
+  }
+  it should "have valid left identity" in {
+    initialZipper.duplicate.extract shouldBe initialZipper
+  }
+  it should "have associativity" in {
+    initialZipper.duplicate.duplicate shouldBe initialZipper.coflatMap(_.duplicate)
+  }
   it should "have valid coflatMap" in {
     def sumLeftRight(streamZ: Zipper[Int]): Int = {
       streamZ.focus + streamZ.moveLeft.focus + streamZ.moveRight.focus
     }
-    // Note: the leftmost and rightmost values lack an identity element for what to do in the case where the stream is empty
     initialZipper.coflatMap(sumLeftRight).toList shouldBe List(4,6,9,12,15,18,21,23)
   }
   it should "have a valid map" in {

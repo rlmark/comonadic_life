@@ -1,8 +1,20 @@
 package typeclasses.data
 
 import typeclasses.Comonad
+import typeclasses.data.Zipper.unfold
 
 case class Zipper[A](left: Stream[A], focus: A, right: Stream[A]) {
+
+  def maybeRight: Option[Zipper[A]] = right match {
+    case nextRight #:: rights => Some(Zipper(focus #:: left, nextRight, rights))
+    case _ => None
+  }
+
+  def maybeLeft: Option[Zipper[A]] = left match {
+    case nextLeft +: lefts => Some(Zipper(lefts, nextLeft, focus +: right))
+    case _ => None
+  }
+
   def setFocus(a: A): Zipper[A] = {
     this.copy(focus = a)
   }
@@ -33,16 +45,10 @@ case class Zipper[A](left: Stream[A], focus: A, right: Stream[A]) {
   }
 
   def duplicateRight[B](f:Zipper[A] => B): Stream[B] =
-    Stream.iterate(this)(_.moveRight)
-    .tail
-    .zip(right)
-    .map(t => f(t._1))
+    unfold(this)(z => z.maybeRight.map(x => (f(x), x)))
 
   def duplicateLeft[B](f:Zipper[A] => B): Stream[B] =
-    Stream.iterate(this)(_.moveLeft)
-    .tail
-    .zip(left)
-    .map(t => f(t._1))
+    unfold(this)(z => z.maybeLeft.map(x => (f(x), x)))
 
 }
 
@@ -52,11 +58,16 @@ object Zipper {
     Zipper(items.tail.toStream, items.head, Stream.empty)
   }
 
+  def unfold[A, B](a: A)(f: A => Option[(B, A)]): Stream[B] = f(a) match {
+    case Some((b, a)) => b #:: unfold(a)(f)
+    case None         => Stream.empty
+  }
+
   implicit def zipperComonad: Comonad[Zipper] = new Comonad[Zipper] {
     override def extract[A](w: Zipper[A]): A = w.focus
 
     override def duplicate[A](w: Zipper[A]): Zipper[Zipper[A]] = {
-      Zipper(w.duplicateLeft(identity), w, w.duplicateRight(identity))
+        Zipper(w.duplicateLeft(identity), w, w.duplicateRight(identity))
     }
 
     override def map[A, B](fa: Zipper[A])(f: A => B): Zipper[B] = {

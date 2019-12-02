@@ -1,9 +1,9 @@
 package typeclasses.data
 
+import org.scalatest._
 import typeclasses.data.Zipper._
 import typeclasses.syntax.gridZipper._
 import typeclasses.syntax.zipper._
-import org.scalatest._
 
 class GridZipperSpec extends FlatSpec with Matchers {
 
@@ -102,7 +102,21 @@ class GridZipperSpec extends FlatSpec with Matchers {
 
     gridZipper.coflatMap(_.extract) shouldBe gridZipper
   }
-  it should "have left identity" in {
+  it should "have valid right identity with >1 elements" in {
+    val streamZipper = Zipper(Stream(1, 2, 3, 4), 5, Stream())
+    val largeStreamZipper: Zipper[Zipper[Int]] = streamZipper.duplicate
+    val gridZipper = GridZipper(largeStreamZipper)
+
+    pprint.pprintln(gridZipper)
+
+    val result = gridZipper.coflatMap(_.extract)
+
+    println()
+    pprint.pprintln(result)
+
+    result shouldBe gridZipper
+  }
+  it should "have valid left identity" in {
     val streamZipper = Zipper(Stream(), 2, Stream())
     val largeStreamZipper: Zipper[Zipper[Int]] = streamZipper.duplicate
     val gridZipper = GridZipper(largeStreamZipper)
@@ -136,14 +150,14 @@ class GridZipperSpec extends FlatSpec with Matchers {
 
     val expectedGridZipper: GridZipper[Int] = GridZipper(
       Zipper(
-        Stream(Zipper(Stream(), 2, Stream(3))),
-        Zipper(Stream(2), 3, Stream()),
+        Stream(Zipper(Stream(), 3, Stream(4))),
+        Zipper(Stream(3), 4, Stream()),
         Stream()
       )
     )
 
     def f(gridZipper: GridZipper[Int]): Int = {
-      gridZipper.extract + 1
+      gridZipper.extract + 2
     }
 
     gridZipper.coflatMap(f) shouldBe expectedGridZipper
