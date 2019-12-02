@@ -12,8 +12,16 @@ class ZipperSpec extends FlatSpec with Matchers {
   it should "shift focus left" in {
     initialZipper.moveLeft shouldBe Zipper(Stream(3,2,1), 4, Stream(5,6,7,8))
   }
+  it should "stop shifting left when no more lefts present" in {
+    val leftEmpty = Zipper(Stream.empty, 1, Stream(2,3))
+    leftEmpty.moveLeft shouldBe leftEmpty
+  }
   it should "shift focus right" in {
     initialZipper.moveRight shouldBe Zipper(Stream(5,4,3,2,1), 6, Stream(7,8))
+  }
+  it should "stop shifting right when no more right's present" in {
+    val rightEmpty = Zipper(Stream(2), 1, Stream.empty)
+    rightEmpty.moveRight shouldBe rightEmpty
   }
   it should "create a list from the zipper intuitively" in {
     initialZipper.toList shouldBe List(1,2,3,4,5,6,7,8)
