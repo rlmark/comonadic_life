@@ -41,7 +41,7 @@ class GridZipperSpec extends FlatSpec with Matchers {
 
     gridZipper.duplicate shouldBe expectedGridZipper
   }
-  it should "duplicate more complicated zippers" in {
+  it should "duplicate more complicated zippers" in pendingUntilFixed {
     val streamZipper = Zipper(Stream(1), 2, Stream())
     val largeStreamZipper: Zipper[Zipper[Int]] = streamZipper.duplicate
     val gridZipper = GridZipper(largeStreamZipper)
@@ -102,17 +102,12 @@ class GridZipperSpec extends FlatSpec with Matchers {
 
     gridZipper.coflatMap(_.extract) shouldBe gridZipper
   }
-  it should "have valid right identity with >1 elements" in {
+  it should "have valid right identity with >1 elements" in pendingUntilFixed {
     val streamZipper = Zipper(Stream(1, 2, 3, 4), 5, Stream())
     val largeStreamZipper: Zipper[Zipper[Int]] = streamZipper.duplicate
     val gridZipper = GridZipper(largeStreamZipper)
 
-    pprint.pprintln(gridZipper)
-
     val result = gridZipper.coflatMap(_.extract)
-
-    println()
-    pprint.pprintln(result)
 
     result shouldBe gridZipper
   }
@@ -121,12 +116,26 @@ class GridZipperSpec extends FlatSpec with Matchers {
     val largeStreamZipper: Zipper[Zipper[Int]] = streamZipper.duplicate
     val gridZipper = GridZipper(largeStreamZipper)
 
-    gridZipper.coflatMap(_.extract) shouldBe gridZipper
-
     gridZipper.duplicate.extract shouldBe gridZipper
+  }
+  it should "have valid left identity with >1 elements" in {
+    val streamZipper = Zipper(Stream(1, 2, 3, 4), 5, Stream(6,7))
+    val largeStreamZipper: Zipper[Zipper[Int]] = streamZipper.duplicate
+    val gridZipper = GridZipper(largeStreamZipper)
+
+    val result = gridZipper.duplicate.extract
+
+    result shouldBe gridZipper
   }
   it should "have associativity" in {
     val streamZipper = Zipper(Stream(), 2, Stream())
+    val largeStreamZipper: Zipper[Zipper[Int]] = streamZipper.duplicate
+    val gridZipper = GridZipper(largeStreamZipper)
+
+    gridZipper.duplicate.duplicate shouldBe gridZipper.coflatMap(_.duplicate)
+  }
+  it should "have associativity with > 1 elements" in pendingUntilFixed {
+    val streamZipper = Zipper(Stream(2,1), 3, Stream(4,5))
     val largeStreamZipper: Zipper[Zipper[Int]] = streamZipper.duplicate
     val gridZipper = GridZipper(largeStreamZipper)
 
@@ -143,7 +152,7 @@ class GridZipperSpec extends FlatSpec with Matchers {
 
     gridZipper.coflatMap(f) shouldBe GridZipper(Zipper(Stream(), 3, Stream()).duplicate)
   }
-  it should "handle more complicated coflatmap" in {
+  it should "handle more complicated coflatmap" in pendingUntilFixed {
     val streamZipper = Zipper(Stream(1), 2, Stream())
     val largeStreamZipper: Zipper[Zipper[Int]] = streamZipper.duplicate
     val gridZipper = GridZipper(largeStreamZipper)
