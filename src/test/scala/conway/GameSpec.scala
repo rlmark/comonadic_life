@@ -1,73 +1,42 @@
 package conway
 
-import typeclasses.data.{GridZipper, Zipper}
+import typeclasses.data.GridZipper
 import conway.Game.cellLifecycle
+import conway.Main.Coordinates
 import org.scalatest._
 import typeclasses.syntax.gridZipper._
-import typeclasses.syntax.zipper._
 
 class GameSpec extends FlatSpec with Matchers {
-  val lrStream: Stream[Int] = Stream.fill(3)(0)
-  val streamOfStreams: Zipper[Zipper[Int]] = Zipper(lrStream, 0, lrStream).duplicate
-  val basicGrid = GridZipper(streamOfStreams)
 
-  "cellLifecycle" should "keep board of all 0's the same" in {
-    val result = basicGrid.coflatMap(x => cellLifecycle(x))
+  def setGridState(width: Int, desiredActiveCells: List[Coordinates])(test: (GridZipper[Int]) => Unit): Unit = {
+    val coordMap: Map[(Int, Int), Int] = desiredActiveCells.map(coordinates => coordinates -> 1).toMap
+    val initialGridState: GridZipper[Int] = Main.buildGrid((coords) => coordMap.getOrElse(coords, 0), width)
+    println("INITIAL GRID STATE")
+    println(initialGridState.prettyPrint + "\n")
+    test(initialGridState)
+  }
+
+  "cellLifecycle" should "keep board of all 0's the same" in setGridState(width = 3, List.empty){ grid =>
+    val result = grid.coflatMap(cellLifecycle)
     println(result.prettyPrint)
-    result.extract shouldBe 0
+    result.value.toList.flatMap(_.toList).sum shouldBe 0
   }
-  it should "set an arbitrary point" in {
-    val setFocusB = basicGrid.setFocus(5)
-    val randomN = setFocusB.north.setFocus(4)
-    println(randomN.prettyPrint + "\n")
-    println(randomN.west.setFocus(1).prettyPrint)
-  }
-  it should "set another arbitrary point" in {
-    val setFocusB = basicGrid.setFocus(1)
-
-    val south = setFocusB.south.setFocus(2)
-    println(south.prettyPrint + "\n")
-
-    val north = setFocusB.north.setFocus(3)
-    println(north.prettyPrint + "\n")
-  }
-  it should "change live cell to dead when no surrounding cells are alive" in {
-    val setCenter = basicGrid.setFocus(1)
-    println(setCenter.prettyPrint + "\n")
-
-    val result = setCenter.coflatMap(x => cellLifecycle(x))
+  it should "change a live cell to dead when no surrounding cells are alive" in setGridState(5, List((2,2))){grid =>
+    val result = grid.coflatMap(cellLifecycle)
     println(result.prettyPrint)
-    result.extract shouldBe 0
+    result.value.toList.flatMap(_.toList).sum shouldBe 0
   }
-  it should "change dead cell to alive when surrounded by three live cells" in {
-    val grid1: GridZipper[Int] = basicGrid.west.setFocus(1)
-
-    println("set west")
-    println(grid1.prettyPrint)
-
-    val grid2 = grid1.north.setFocus(1)
-
-    println("set north west")
-    println(grid2.prettyPrint)
-
-    val grid3 = grid2.east.setFocus(1)
-
-    println("set north")
-    println(grid3.prettyPrint)
-
-    val centerGrid = grid3.south
-
-    println("return center")
-    println(centerGrid.prettyPrint)
-
-    val result = centerGrid.coflatMap(cellLifecycle)
-    println("result")
+  it should "change dead cell to alive when surrounded by three live cells" in setGridState(5, List((2,2), (3,3), (3,1))){ grid =>
+    val result = grid.coflatMap(cellLifecycle)
     println(result.prettyPrint)
-    result.extract shouldBe 1
-
-    println("south")
-    println(result.south.prettyPrint)
-    result.south.extract shouldBe 0
+    result.value.toList.flatMap(_.toList).sum shouldBe 2
+  }
+  it should "create a stable blinker with period of 2" in setGridState(5, List((2,2), (2,3), (2,1))){ grid =>
+    val gen2 = grid.coflatMap(cellLifecycle)
+    println(gen2.prettyPrint + "\n")
+    val gen3 = gen2.coflatMap(cellLifecycle)
+    println(gen3.prettyPrint)
+    gen3 shouldBe grid
   }
 
 }
