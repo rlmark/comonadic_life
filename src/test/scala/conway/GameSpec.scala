@@ -38,5 +38,9 @@ class GameSpec extends FlatSpec with Matchers {
     println(gen3.prettyPrint)
     gen3 shouldBe grid
   }
+  it should "not have undesirable edge artifacts" in setGridState(5, List((0,0), (1,0))){ grid =>
+    val result = grid.coflatMap(cellLifecycle)
+    result.value.toList.flatMap(_.toList).sum shouldBe 0
+  }
 
 }
