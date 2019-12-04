@@ -48,6 +48,36 @@ class GridZipperSpec extends FlatSpec with Matchers {
     val largeStreamZipper: Zipper[Zipper[Int]] = streamZipper.duplicate
     val gridZipper = GridZipper(largeStreamZipper)
 
+    pprint.pprintln(largeStreamZipper)
+
+    val expectedFocus: Zipper[GridZipper[Int]] = Zipper(
+      Stream(
+        Option(
+          GridZipper(
+            Zipper(
+              Stream(
+                Option(Zipper(Stream(), None, Stream(Some(1), Some(2))))
+              ),
+              Option(Zipper(Stream(), Option(1), Stream(Option(2)))),
+              Stream()
+            )
+          )
+        )
+      ),
+      Option(
+        GridZipper( // Innermost focus
+          Zipper(
+            Stream(
+              Option(Zipper(Stream(), Option(1), Stream(Option(2))))
+            ),
+            Option(Zipper(Stream(Option(1)), Option(2), Stream())),
+            Stream()
+          )
+        )
+      ),
+      Stream() // Right stream should always be empty on this level because there were no right elements to begin with
+    )
+
     val expectedGridZipper: GridZipper[GridZipper[Int]] = GridZipper(
       Zipper(
         Stream(
@@ -82,8 +112,13 @@ class GridZipperSpec extends FlatSpec with Matchers {
       )
     )
 
-    // GridZ[StreamZ[StreamZ[GridZ[StreamZ[StreamZ[Int]]]]]]]
-    gridZipper.duplicate shouldBe expectedGridZipper
+    // GridZ[Zip[Zip[GridZ[Zip[Zip[Int]]]]]]]
+    val result = gridZipper.duplicate
+
+    // Sanity check to see if the focus is right at least
+    result.value.focus shouldBe Some(expectedFocus)
+
+    result shouldBe expectedGridZipper
   }
   it should "have associativity" in {
     val streamZipper = Zipper(Stream(), Some(2), Stream())
