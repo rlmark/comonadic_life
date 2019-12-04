@@ -1,17 +1,13 @@
 package typeclasses.data
 
-import typeclasses.Comonad
+import typeclasses.CoflatMap
 import typeclasses.data.Zipper._
-import typeclasses.syntax.gridZipper._
 import typeclasses.syntax.zipper._
 
 // 2 dimensions represented by nested Zippers
 case class GridZipper[A](value: Zipper[Zipper[A]]) {
 
-  def setFocus(a: A): GridZipper[A] = {
-    val inner: Zipper[A] = value.focus.setFocus(a)
-    GridZipper(value.setFocus(inner))
-  }
+  def maybeFocus: Option[A] = value.focus.flatMap(_.focus)
 
   def prettyPrint: String = {
     value.toList.map(x => x.prettyPrint).mkString("\n")
@@ -33,16 +29,16 @@ case class GridZipper[A](value: Zipper[Zipper[A]]) {
     GridZipper(value.map(xAxis => xAxis.moveLeft))
   }
 
-  def getNeighbors: List[A] = {
+  def getNeighbors: List[Option[A]] = {
     List(
-      this.north.extract,
-      this.east.extract,
-      this.south.extract,
-      this.west.extract,
-      this.north.east.extract,
-      this.north.west.extract,
-      this.south.east.extract,
-      this.south.west.extract
+      this.north.value.focus.flatMap(_.focus),
+      this.east.value.focus.flatMap(_.focus),
+      this.south.value.focus.flatMap(_.focus),
+      this.west.value.focus.flatMap(_.focus),
+      this.north.east.value.focus.flatMap(_.focus),
+      this.north.west.value.focus.flatMap(_.focus),
+      this.south.east.value.focus.flatMap(_.focus),
+      this.south.west.value.focus.flatMap(_.focus)
     )
   }
 }
@@ -53,9 +49,8 @@ object GridZipper {
     GridZipper(Zipper.fromList(lists.map(Zipper.fromList)))
   }
 
-  implicit def gridZipperComonad: Comonad[GridZipper] = {
-    new Comonad[GridZipper] {
-      override def extract[A](w: GridZipper[A]): A = w.value.focus.focus
+  implicit def gridZipperCoflatMap: CoflatMap[GridZipper] = {
+    new CoflatMap[GridZipper] {
 
       override def duplicate[A](w: GridZipper[A]): GridZipper[GridZipper[A]] = {
         val s1: Zipper[Zipper[Zipper[A]]] = nest(w.value)
@@ -69,7 +64,7 @@ object GridZipper {
 
       private def nest[A](s: Zipper[Zipper[A]]): Zipper[Zipper[Zipper[A]]] = {
         val duplicateLefts: Stream[Zipper[Zipper[A]]] = {
-//          Zipper.unfold(s)(z => z.maybeLeft.flatMap(y =>  y.maybeLeft.map(x => (x,x))))
+//                    Zipper.unfold(s)(z => z.maybeLeft.flatMap(y =>  y.maybeLeft.map(x => (x,x))))
           Stream.iterate(s)(current => current.map(_.moveLeft))
             .tail
             .zip(s.left)
@@ -77,13 +72,13 @@ object GridZipper {
         }
 
         val duplicateRights: Stream[Zipper[Zipper[A]]] =
-//          Zipper.unfold(s)(z => z.maybeRight.flatMap(y => y.maybeRight.map(x => (x,x))))
-        Stream.iterate(s)(current => current.map(_.moveRight))
+//                  Zipper.unfold(s)(z => z.maybeRight.flatMap(y => y.maybeRight.map(x => (x,x))))
+          Stream.iterate(s)(current => current.map(_.moveRight))
             .tail
             .zip(s.right)
             .map(_._1)
 
-        Zipper(duplicateLefts, s, duplicateRights)
+        Zipper(duplicateLefts.map(Option(_)), Option(s), duplicateRights.map(Option(_)))
       }
     }
   }
