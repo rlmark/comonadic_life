@@ -2,7 +2,6 @@ package conway
 
 import cats.effect.Sync
 import cats.syntax.all._
-import conway.Main.Coordinates
 
 import scala.util.Try
 

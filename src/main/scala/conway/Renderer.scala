@@ -1,10 +1,9 @@
 package conway
 
-import typeclasses.data.GridZipper
-import typeclasses.syntax.gridZipper._
-import typeclasses.syntax.zipper._
+import conway.data.GridZipper
 import cats.effect.Sync
-import cats.syntax.all._
+import cats.syntax.functor._
+import cats.syntax.flatMap._
 
 import scala.sys.process._
 

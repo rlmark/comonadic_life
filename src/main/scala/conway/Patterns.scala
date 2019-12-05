@@ -1,7 +1,5 @@
 package conway
 
-import conway.Main.Coordinates
-
 sealed trait Patterns {
   val shape: Map[Coordinates, Int]
   val value: Int
