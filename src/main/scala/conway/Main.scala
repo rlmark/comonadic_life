@@ -1,7 +1,6 @@
 package conway
 
-import typeclasses.data.GridZipper
-import typeclasses.syntax.gridZipper._
+import conway.data.GridZipper
 import cats.effect.{ExitCode, IO, IOApp, Sync, Timer}
 import cats.syntax.all._
 import conway.Game._
@@ -10,8 +9,6 @@ import fs2.Stream
 import scala.concurrent.duration._
 
 object Main extends IOApp {
-
-  type Coordinates = (Int, Int)
 
   def createCoordinateLists(width: Int): List[List[Coordinates]] = {
     val coords: List[Coordinates] = (for {
@@ -26,7 +23,6 @@ object Main extends IOApp {
     val gridZipperCoordinates: GridZipper[(Int, Int)] = GridZipper.fromLists(coordinates)
     gridZipperCoordinates.map(setCellValue)
   }
-
 
   def setCellValue(coord: (Int, Int), initialStateMap: Map[Coordinates, Int]): Int = {
     initialStateMap.getOrElse(coord, 0)

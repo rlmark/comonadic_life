@@ -1,14 +1,13 @@
 package conway
 
-import typeclasses.data.GridZipper
+import conway.data.GridZipper
 import conway.Game.cellLifecycle
-import conway.Main.Coordinates
-import org.scalatest._
-import typeclasses.syntax.gridZipper._
+import org.scalatest.{FlatSpec, Matchers}
+import cats.syntax.coflatMap._
 
 class GameSpec extends FlatSpec with Matchers {
 
-  def setGridState(width: Int, desiredActiveCells: List[Coordinates])(test: (GridZipper[Int]) => Unit): Unit = {
+  def setGridState(width: Int, desiredActiveCells: List[Coordinates])(test: GridZipper[Int] => Unit): Unit = {
     val coordMap: Map[(Int, Int), Int] = desiredActiveCells.map(coordinates => coordinates -> 1).toMap
     val initialGridState: GridZipper[Int] = Main.buildGrid((coords) => coordMap.getOrElse(coords, 0), width)
     println("INITIAL GRID STATE")

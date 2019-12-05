@@ -1,6 +1,5 @@
 package conway
 
-
 trait Visualization {
   val alive: String
   val background: String
