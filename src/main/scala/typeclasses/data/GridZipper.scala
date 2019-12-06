@@ -58,18 +58,13 @@ object GridZipper {
       override def extract[A](w: GridZipper[A]): A = w.value.focus.focus
 
       override def duplicate[A](w: GridZipper[A]): GridZipper[GridZipper[A]] = {
-        val s1: Zipper[Zipper[Zipper[A]]] = nest(w.value)
-        val s2: Zipper[Zipper[Zipper[Zipper[A]]]] = nest(s1)
-        val g1: GridZipper[Zipper[Zipper[A]]] = GridZipper(s2)
-        val g2: GridZipper[GridZipper[A]] = map(g1)(GridZipper(_))
-        g2
+        map(GridZipper(nest(nest(w.value))))(GridZipper(_))
       }
 
       override def map[A, B](fa: GridZipper[A])(f: A => B): GridZipper[B] = GridZipper(fa.value.map(s => s.map(f)))
 
       private def nest[A](s: Zipper[Zipper[A]]): Zipper[Zipper[Zipper[A]]] = {
         val duplicateLefts: Stream[Zipper[Zipper[A]]] = {
-//          Zipper.unfold(s)(z => z.maybeLeft.flatMap(y =>  y.maybeLeft.map(x => (x,x))))
           Stream.iterate(s)(current => current.map(_.moveLeft))
             .tail
             .zip(s.left)
@@ -77,7 +72,6 @@ object GridZipper {
         }
 
         val duplicateRights: Stream[Zipper[Zipper[A]]] =
-//          Zipper.unfold(s)(z => z.maybeRight.flatMap(y => y.maybeRight.map(x => (x,x))))
         Stream.iterate(s)(current => current.map(_.moveRight))
             .tail
             .zip(s.right)

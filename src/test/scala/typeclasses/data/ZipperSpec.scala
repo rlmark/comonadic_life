@@ -29,14 +29,14 @@ class ZipperSpec extends FlatSpec with Matchers {
   it should "duplicateLeft" in {
     val smallerZipper: Zipper[Int] = Zipper(Stream(2,1), 3, Stream(4))
 
-    smallerZipper.duplicateLeft(identity).toList shouldBe List(
+    smallerZipper.duplicateLefts.toList shouldBe List(
       Zipper(Stream(1), 2, Stream(3,4)),
       Zipper(Stream(), 1, Stream(2,3,4))
     )
   }
   it should "duplicateRight" in {
     val smallerZipper: Zipper[Int] = Zipper(Stream(1), 2, Stream(3,4))
-    smallerZipper.duplicateRight(identity).toList shouldBe List(
+    smallerZipper.duplicateRights.toList shouldBe List(
       Zipper(Stream(2,1), 3, Stream(4)),
       Zipper(Stream(3,2,1),4,Stream())
     )

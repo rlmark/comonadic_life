@@ -44,12 +44,11 @@ case class Zipper[A](left: Stream[A], focus: A, right: Stream[A]) {
     left.reverse #::: (focus #:: right)
   }
 
-  def duplicateRight[B](f:Zipper[A] => B): Stream[B] =
-    unfold(this)(z => z.maybeRight.map(x => (f(x), x)))
+  def duplicateRights[B]: Stream[Zipper[A]] =
+    unfold(this)(z => z.maybeRight.map(x => (x, x)))
 
-  def duplicateLeft[B](f:Zipper[A] => B): Stream[B] =
-    unfold(this)(z => z.maybeLeft.map(x => (f(x), x)))
-
+  def duplicateLefts[B]: Stream[Zipper[A]] =
+    unfold(this)(z => z.maybeLeft.map(x => (x, x)))
 }
 
 object Zipper {
@@ -67,7 +66,7 @@ object Zipper {
     override def extract[A](w: Zipper[A]): A = w.focus
 
     override def duplicate[A](w: Zipper[A]): Zipper[Zipper[A]] = {
-        Zipper(w.duplicateLeft(identity), w, w.duplicateRight(identity))
+        Zipper(w.duplicateLefts, w, w.duplicateRights)
     }
 
     override def map[A, B](fa: Zipper[A])(f: A => B): Zipper[B] = {
