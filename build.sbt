@@ -4,6 +4,8 @@ version := "0.1"
 
 scalaVersion := "2.12.9"
 
+addCompilerPlugin("org.typelevel" %% "kind-projector" % "0.11.0" cross CrossVersion.full)
+
 scalacOptions ++= Seq(
   "-deprecation",
   "-encoding", "utf-8",

@@ -58,6 +58,18 @@ class Console[F[_] : Sync] {
     } yield Patterns(int).shape
   }
 
+  def getUserShapeC: F[Map[typeclasses.data.Coordinates, Int]] = {
+    def listPatterns: String = {
+      PatternsC.patterns.map(p => s"${p.value} for ${p.toString}").mkString("\n")
+    }
+    for {
+      _ <- Sync[F].delay(println("Select a shape"))
+      _ <- Sync[F].delay(println(
+        s"Enter $listPatterns"))
+      int <- readInt
+    } yield PatternsC(int).shape
+  }
+
   def getCoordinates: F[Coordinates] = {
     for {
       _ <- Sync[F].delay(println("Where do you want your shape?"))
@@ -73,6 +85,21 @@ class Console[F[_] : Sync] {
     } yield coordinates
   }
 
+  def getCoordinatesC: F[typeclasses.data.Coordinates] = {
+    for {
+      _ <- Sync[F].delay(println("Where do you want your shape?"))
+      _ <- Sync[F].delay(println("Enter in format X,Y"))
+      s <- Sync[F].delay(scala.io.StdIn.readLine)
+      coordinates <- Sync[F].fromTry {
+        Try {
+          val intList: List[Int] = s.split(",").toList.map(_.trim.toInt)
+          val x :: y :: Nil = intList
+          typeclasses.data.Coordinates(x, y)
+        }
+      }.handleErrorWith(_ => getCoordinatesC)
+    } yield coordinates
+  }
+
   def setShapeAtCoordinates(): F[Map[Coordinates, Int]] = {
     for {
       userShape <- getUserShape
@@ -80,10 +107,31 @@ class Console[F[_] : Sync] {
     } yield userShape.at(coordinates)
   }
 
+  def setShapeAtCoordinatesC(): F[Map[typeclasses.data.Coordinates, Int]] = {
+    for {
+      userShape <- getUserShapeC
+      coordinates <- getCoordinatesC
+    } yield userShape.at(coordinates)
+  }
+
   def placeUserShapes: F[Map[Coordinates, Int]] = {
     def loop(acc: Map[Coordinates, Int]): F[Map[Coordinates, Int]] = {
       for {
         currentShape <- setShapeAtCoordinates() // TODO, press any other key to continue
+        _ <- Sync[F].delay(println("Press 0 when done setting board, press any other Int to continue"))
+        int <- readInt
+        coordinateMap <- if (int == 0) Sync[F].delay(acc ++ currentShape) else loop(acc ++ currentShape)
+      } yield coordinateMap
+    }
+
+    loop(Map.empty)
+  }
+
+
+  def placeUserShapes2: F[Map[typeclasses.data.Coordinates, Int]] = {
+    def loop(acc: Map[typeclasses.data.Coordinates, Int]): F[Map[typeclasses.data.Coordinates, Int]] = {
+      for {
+        currentShape <- setShapeAtCoordinatesC() // TODO, press any other key to continue
         _ <- Sync[F].delay(println("Press 0 when done setting board, press any other Int to continue"))
         int <- readInt
         coordinateMap <- if (int == 0) Sync[F].delay(acc ++ currentShape) else loop(acc ++ currentShape)
