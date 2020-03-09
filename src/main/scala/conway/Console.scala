@@ -2,7 +2,6 @@ package conway
 
 import cats.effect.Sync
 import cats.syntax.all._
-import conway.Main.Coordinates
 
 import scala.util.Try
 
@@ -46,7 +45,7 @@ class Console[F[_] : Sync] {
     } yield sanitizedInt
   }
 
-  def getUserShape: F[Map[Coordinates, Int]] = {
+  def getUserShape: F[Cells] = {
     def listPatterns: String = {
       Patterns.patterns.map(p => s"${p.value} for ${p.toString}").mkString("\n")
     }
@@ -73,15 +72,15 @@ class Console[F[_] : Sync] {
     } yield coordinates
   }
 
-  def setShapeAtCoordinates(): F[Map[Coordinates, Int]] = {
+  def setShapeAtCoordinates(): F[Cells] = {
     for {
       userShape <- getUserShape
       coordinates <- getCoordinates
     } yield userShape.at(coordinates)
   }
 
-  def placeUserShapes: F[Map[Coordinates, Int]] = {
-    def loop(acc: Map[Coordinates, Int]): F[Map[Coordinates, Int]] = {
+  def placeUserShapes: F[Cells] = {
+    def loop(acc: Cells): F[Cells] = {
       for {
         currentShape <- setShapeAtCoordinates() // TODO, press any other key to continue
         _ <- Sync[F].delay(println("Press 0 when done setting board, press any other Int to continue"))

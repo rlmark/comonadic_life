@@ -11,8 +11,6 @@ import scala.concurrent.duration._
 
 object Main extends IOApp {
 
-  type Coordinates = (Int, Int)
-
   def createCoordinateLists(width: Int): List[List[Coordinates]] = {
     val coords: List[Coordinates] = (for {
       x <- 0 until width
@@ -28,17 +26,17 @@ object Main extends IOApp {
   }
 
 
-  def setCellValue(coord: (Int, Int), initialStateMap: Map[Coordinates, Int]): Int = {
+  def setCellValue(coord: (Int, Int), initialStateMap: Cells): Int = {
     initialStateMap.getOrElse(coord, 0)
   }
 
   def gameLoop[F[_] : Timer : Sync]: F[Stream[F, GridZipper[Int]]] = {
     val console = new Console[F]()
     for {
-      vis <- console.getVisualization
       width <- console.getWidth
-      userShapeInput <- console.placeUserShapes
+      board <- if(width == 47) random else inputs(console)
     } yield {
+      val (vis, userShapeInput) = board
       val render = new Renderer[F](vis)
       Stream.iterate(
         buildGrid(coordinates => setCellValue(coordinates, userShapeInput), width) // build initial grid with user presents
@@ -47,6 +45,13 @@ object Main extends IOApp {
         .zipLeft(Stream.awakeEvery[F](325.millis)) // sets the frame rate
     }
   }
+
+  def inputs[F[_]: Sync](console: Console[F]): F[Board] =
+    (console.getVisualization, console.placeUserShapes).mapN((v: Visualization, c: Cells) => (v,c))
+
+  def random[F[_]: Sync]: F[Board] =
+    Sync[F].delay((Visualization.Forest, (1 to 47).flatMap(i => Patterns(i % 5).shape.rnd).toMap))
+
 
   override def run(args: List[String]): IO[ExitCode] =
     gameLoop[IO].flatMap(_.compile.drain.map(_ => ExitCode.Success))

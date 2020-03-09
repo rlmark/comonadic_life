@@ -1,15 +1,13 @@
 package conway
 
-import conway.Main.Coordinates
-
 sealed trait Patterns {
-  val shape: Map[Coordinates, Int]
+  val shape: Cells
   val value: Int
 }
 
 object Patterns {
   case object Glider extends Patterns {
-    val shape: Map[Coordinates, Int] = Map(
+    val shape: Cells = Map(
       (1, 0) -> 1,
       (2, 1) -> 1,
       (0, 2) -> 1,
@@ -20,7 +18,7 @@ object Patterns {
   }
 
   case object Blinker extends Patterns {
-    val shape: Map[Coordinates, Int] = Map(
+    val shape: Cells = Map(
       (0, 0) -> 1,
       (1, 0) -> 1,
       (2, 0) -> 1
@@ -29,7 +27,7 @@ object Patterns {
   }
 
   case object Beacon extends Patterns {
-    val shape: Map[Coordinates, Int] = Map(
+    val shape: Cells = Map(
       (0, 0) -> 1,
       (1, 0) -> 1,
       (0, 1) -> 1,
@@ -41,7 +39,7 @@ object Patterns {
   }
 
   case object Toad extends Patterns {
-    val shape: Map[Coordinates, Int] = Map(
+    val shape: Cells = Map(
       (0, 2) -> 1,
       (0, 3) -> 1,
       (1, 1) -> 1,
@@ -53,7 +51,7 @@ object Patterns {
   }
 
   case object DieHard extends Patterns {
-    val shape: Map[Coordinates, Int] = Map(
+    val shape: Cells = Map(
       (5, 1) -> 1,
       (4, 0) -> 1,
       (4, 1) -> 1,
@@ -66,7 +64,7 @@ object Patterns {
   }
 
   case class UnknownShape(value: Int) extends Patterns {
-    val shape: Map[Coordinates, Int]= Map.empty
+    val shape: Cells = Map.empty
   }
 
   val patterns: List[Patterns] = List(Glider, Blinker, Beacon, Toad, DieHard)
