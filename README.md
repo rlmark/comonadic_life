@@ -17,4 +17,4 @@ The coordinate grid is oriented with the origin point being located at the right
  
 Items are placed on the grid via X and Y coordinates starting at their rightmost bottom corner. 
 
-There may be some undesirable edge artifacts due to the lack of periodicity in the current grid representation. 
+There may be some undesirable edge artifacts due to the lack of periodicity in the current grid representation. The branch `OptionSpike` solves these by implementing CoFlatMap instead of Comonad and modeling the zipper as a `Stream` of `Options`. 
